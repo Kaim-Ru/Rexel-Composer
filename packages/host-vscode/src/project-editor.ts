@@ -18,6 +18,7 @@ import {
 } from "./protocol.ts";
 
 const NONCE_BYTES = 16;
+const FLUSH_TIMEOUT_MS = 5000;
 const decoder = new TextDecoder();
 const encoder = new TextEncoder();
 
@@ -96,6 +97,8 @@ export class ProjectEditorProvider implements vscode.CustomEditorProvider<Projec
   >();
   readonly onDidChangeCustomDocument = this.changes.event;
   private readonly panels = new Map<ProjectDocument, vscode.WebviewPanel>();
+  private readonly flushes = new Map<number, (text: string | undefined) => void>();
+  private nextFlushId = 0;
   private active: vscode.WebviewPanel | undefined;
 
   constructor(private readonly context: vscode.ExtensionContext) {}
@@ -153,6 +156,10 @@ export class ProjectEditorProvider implements vscode.CustomEditorProvider<Projec
         case "text":
           document.text = message.text;
           break;
+        case "flushed":
+          this.flushes.get(message.id)?.(message.text);
+          this.flushes.delete(message.id);
+          break;
         case "edit":
           this.changes.fire({
             document,
@@ -186,11 +193,28 @@ export class ProjectEditorProvider implements vscode.CustomEditorProvider<Projec
     });
   }
 
+  private async sync(document: ProjectDocument) {
+    const panel = this.panels.get(document);
+    if (panel === undefined) return;
+    const id = this.nextFlushId++;
+    const text = await new Promise<string | undefined>((resolve) => {
+      this.flushes.set(id, resolve);
+      setTimeout(() => {
+        this.flushes.delete(id);
+        resolve(undefined);
+      }, FLUSH_TIMEOUT_MS);
+      void panel.webview.postMessage({ type: "flush", id } satisfies HostToWebview);
+    });
+    if (text !== undefined) document.text = text;
+  }
+
   async saveCustomDocument(document: ProjectDocument): Promise<void> {
+    await this.sync(document);
     await vscode.workspace.fs.writeFile(document.uri, await document.bytes());
   }
 
   async saveCustomDocumentAs(document: ProjectDocument, destination: vscode.Uri): Promise<void> {
+    await this.sync(document);
     await vscode.workspace.fs.writeFile(destination, await document.bytes());
   }
 
@@ -205,6 +229,7 @@ export class ProjectEditorProvider implements vscode.CustomEditorProvider<Projec
     document: ProjectDocument,
     context: vscode.CustomDocumentBackupContext,
   ): Promise<vscode.CustomDocumentBackup> {
+    await this.sync(document);
     await vscode.workspace.fs.writeFile(context.destination, await document.bytes());
     return {
       id: context.destination.toString(),

@@ -106,6 +106,9 @@ window.addEventListener("message", (event: MessageEvent<HostToWebview>) => {
     case "command":
       app.current?.runCommand(message.id);
       break;
+    case "flush":
+      vscode.postMessage({ type: "flushed", id: message.id, text: session?.store.serialize() });
+      break;
     case "response": {
       const waiter = pending.get(message.id);
       pending.delete(message.id);
