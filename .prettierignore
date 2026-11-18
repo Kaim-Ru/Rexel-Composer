@@ -1,0 +1,5 @@
+pnpm-lock.yaml
+dist/
+examples/out/
+docs/
+CLAUDE.md

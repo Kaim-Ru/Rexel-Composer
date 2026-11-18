@@ -1,0 +1,16 @@
+{
+  "formatVersion": 1,
+  "meta": { "name": "Blur", "appVersion": "0.1.0" },
+  "canvas": { "width": 128, "height": 128 },
+  "nodes": [
+    { "id": "source", "type": "core.image", "position": { "x": 0, "y": 0 }, "params": { "asset": "input" } },
+    { "id": "blur", "type": "core.blur", "position": { "x": 240, "y": 0 }, "params": { "radius": 6 } },
+    { "id": "out", "type": "core.output", "position": { "x": 480, "y": 0 }, "params": {} }
+  ],
+  "links": [
+    { "from": { "node": "source", "port": "image" }, "to": { "node": "blur", "port": "image" } },
+    { "from": { "node": "blur", "port": "image" }, "to": { "node": "out", "port": "image" } }
+  ],
+  "assets": [{ "id": "input", "path": "input.png", "kind": "image" }],
+  "plugins": []
+}

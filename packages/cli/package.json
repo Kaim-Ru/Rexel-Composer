@@ -1,0 +1,27 @@
+{
+  "name": "rexel-composer",
+  "version": "0.1.0",
+  "description": "Render RexelComposer projects from the command line",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "rexel": "dist/main.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc -p ."
+  },
+  "devDependencies": {
+    "@commander-js/extra-typings": "^15.1.0",
+    "@rexel/core": "workspace:*",
+    "commander": "^15.1.0",
+    "@types/node": "^24.19.2",
+    "vite": "^8.3.8"
+  }
+}
