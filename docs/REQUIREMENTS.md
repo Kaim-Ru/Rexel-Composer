@@ -24,6 +24,7 @@ RexelComposer は、ノードベースの画像処理ツール [Pixel Composer](
 | 設計パターン | MVVM(Model = core / ViewModel = TS / View = React) |
 | 画像処理 | CPU のみ(Web Worker / worker_threads で並列化)。GPU は使わない |
 | 色の扱い | 計算は sRGB のまま、内部は Float32 RGBA、書き出しは 8bit PNG |
+| 画像の読込 | PNG のみ。ブラウザのデコーダに任せず core でデコードし、全ホストで同じ画素にする。インターレース PNG は非対応 |
 | Web・VSCode の UI | React + Tailwind CSS + TypeScript。色は VSCode のテーマトークンに合わせる |
 | CLI | TypeScript(Node.js) |
 | プラグイン | TypeScript / JavaScript |
@@ -57,7 +58,7 @@ Web と VSCode は UI ごと共有し、CLI は UI を飛ばして Model を直�
 
 | パッケージ | 層 | 責務 |
 | --- | --- | --- |
-| `@rexel/core` | Model | ノードグラフ、評価エンジン、組み込みノード定義、Float32 RGBA の画像処理、.rxc の読み書きとマイグレーション、パス解決、.rxcp の zip 処理、PNG エンコード、プラグインローダ |
+| `@rexel/core` | Model | ノードグラフ、評価エンジン、組み込みノード定義、Float32 RGBA の画像処理、.rxc の読み書きとマイグレーション、パス解決、.rxcp の zip 処理、PNG のデコードとエンコード、プラグインローダ |
 | `@rexel/viewmodel` | ViewModel | エディタ状態(選択・パン・ズーム)、コマンドと Undo / Redo、購読可能な状態 |
 | `@rexel/ui` | View | React コンポーネント(ノードエディタ、プレビュー、インスペクタ) |
 | `@rexel/host-web` | Host | ブラウザのファイルアクセス、Web Worker、PWA、GitHub Pages 向けビルド |
@@ -146,7 +147,7 @@ CLI は Node.js(LTS)上の TypeScript で書き、npm で `rexel-composer` と�
 | --- | --- |
 | 引数解析 | commander + @commander-js/extra-typings(型付き) |
 | 色付き出力 | Node 組み込みの `util.styleText` |
-| zip・PNG | core と共通(fflate、core の PNG エンコーダ) |
+| zip・PNG | core と共通(fflate、core の PNG デコーダ・エンコーダ) |
 
 ### コマンド
 
