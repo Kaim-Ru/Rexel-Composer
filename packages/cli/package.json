@@ -23,5 +23,16 @@
     "commander": "^15.1.0",
     "@types/node": "^24.19.2",
     "vite": "^8.3.8"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kaim-Ru/Rexel-Composer.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/Kaim-Ru/Rexel-Composer#readme",
+  "keywords": [
+    "pixel-art",
+    "image-processing",
+    "node-editor"
+  ]
 }

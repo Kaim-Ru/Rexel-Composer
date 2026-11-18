@@ -13,5 +13,16 @@
   ],
   "scripts": {
     "typecheck": "tsc -p ."
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kaim-Ru/Rexel-Composer.git",
+    "directory": "packages/plugin-api"
+  },
+  "homepage": "https://github.com/Kaim-Ru/Rexel-Composer#readme",
+  "keywords": [
+    "pixel-art",
+    "image-processing",
+    "node-editor"
+  ]
 }
