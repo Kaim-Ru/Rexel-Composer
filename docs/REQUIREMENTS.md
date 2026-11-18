@@ -41,7 +41,7 @@ RexelComposer は、ノードベースの画像処理ツール [Pixel Composer](
 ロジックは `core` にだけ置き、3つの窓(ホスト)は「ファイルをどう読むか・重い処理をどこで回すか・画面をどう出すか」の差分だけを実装する。core は DOM も Node API も触らず、必要なものはインターフェースとしてホストから注入する(依存性逆転)。
 
 ```
-@rexel/host-web      @rexel/host-vscode      @rexel/cli
+@rexel/host-web      @rexel/host-vscode    rexel-composer
         \                  /                      |
          \                /                       |
           @rexel/ui (View)                        |  UIを通らず直接
@@ -62,7 +62,7 @@ Web と VSCode は UI ごと共有し、CLI は UI を飛ばして Model を直�
 | `@rexel/ui` | View | React コンポーネント(ノードエディタ、プレビュー、インスペクタ) |
 | `@rexel/host-web` | Host | ブラウザのファイルアクセス、Web Worker、PWA、GitHub Pages 向けビルド |
 | `@rexel/host-vscode` | Host | CustomEditorProvider、webview と拡張本体のメッセージ橋 |
-| `@rexel/cli` | Host | コマンド定義、Node の fs、worker_threads |
+| `rexel-composer` | Host | CLI。コマンド定義、Node の fs、worker_threads |
 
 ホストが実装するインターフェースは3つだけ。
 
@@ -129,7 +129,7 @@ Vite で静的ビルドし、GitHub Actions 経由で GitHub Pages にデプロ�
 
 ## CLI版
 
-CLI は Node.js(LTS)上の TypeScript で書き、npm で `rexel` として配布する(`npx rexel`)。作法は [Command Line Interface Guidelines](https://clig.dev/) に従う。
+CLI は Node.js(LTS)上の TypeScript で書き、npm で `rexel-composer` として配布する(`npx rexel-composer`)。`rexel` は既存パッケージと被るため避けた。インストール後のコマンド名は `rexel`。作法は [Command Line Interface Guidelines](https://clig.dev/) に従う。
 
 ### 守る作法
 
