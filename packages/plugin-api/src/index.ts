@@ -141,5 +141,5 @@ export function defineNode<
   const Outputs extends Readonly<Record<string, PortType>>,
   const Params extends Readonly<Record<string, ParamSpec>>,
 >(node: PluginNode<Inputs, Outputs, Params>): PluginNode {
-  return node;
+  return node as unknown as PluginNode;
 }

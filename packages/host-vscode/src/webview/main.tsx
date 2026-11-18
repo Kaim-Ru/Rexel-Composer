@@ -20,7 +20,7 @@ let nextRequestId = 0;
 function request<Result>(body: HostRequest): Promise<Result> {
   const id = nextRequestId++;
   return new Promise<Result>((resolve, reject) => {
-    pending.set(id, { resolve: resolve, reject });
+    pending.set(id, { resolve: resolve as (value: unknown) => void, reject });
     vscode.postMessage({ type: "request", id, request: body });
   });
 }

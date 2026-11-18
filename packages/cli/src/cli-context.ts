@@ -1,7 +1,7 @@
-import type { Command } from "@commander-js/extra-typings";
+import type { Command, OptionValues } from "@commander-js/extra-typings";
 import { Reporter } from "./reporter.ts";
 
-export interface GlobalOptions {
+export interface GlobalOptions extends OptionValues {
   readonly json?: true;
   readonly quiet?: true;
   readonly verbose?: true;
