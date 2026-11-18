@@ -109,7 +109,7 @@ core の tsconfig は `types: []` で、DOM も Node の型も読まない。触
 - `meta` は `name` と `appVersion`、ノードの位置は `position: { x, y }`
 - ノードの `params` は省略でき、省略時は `{}`。各パラメータの既定値はノード定義が持つ
 - ノード・アセット・プラグインの id と、リンクのポート名に使えるのは英数字と `_` `-` だけ
-- `assets` の種類は今は `image` だけ。パレットは、パレット減色ノードを作るときに足す
+- `assets` の種類は `image`(PNG)と `palette`(`.hex`・`.txt`・`.gpl`・`.png`)
 - `canvas` は 1 辺 16384 px 以下。扱う画像はすべて 1 辺 16384 px 以下、かつ合計 67,108,864 px 以下(Float32 RGBA で 1 GB)
 
 ### パス解決ルール
@@ -173,6 +173,7 @@ CLI は Node.js(LTS)上の TypeScript で書き、npm で `rexel-composer` と�
 - stdout には JSON を 1 つだけ出す。成功時は `{"ok": true, ...}`(render なら `output`、`node`、`width`、`height`)
 - 失敗時は `{"ok": false, "error": {"reason", "node"?, "param"?, "usage"}}`。`usage` が true なら使い方の誤り(終了コード 2)
 - `--json` のときは、ヘルプや使い方の案内を stderr にも出さない
+- `validate` だけは問題をすべて並べるため `{"ok": false, "errors": [{"reason", "node"?, "param"?}]}` を返す。問題がなければ `{"ok": true, "errors": []}`
 
 ### render の細則
 
@@ -198,7 +199,7 @@ CLI は Node.js(LTS)上の TypeScript で書き、npm で `rexel-composer` と�
 | `rexel render <project> -o <out.png>` | 出力ノードを画像にする。`--node <id>` で対象を選び、`--set <node>.<param>=<value>` でパラメータを上書き |
 | `rexel pack <project.rxc> -o <out.rxcp>` | .rxcp にまとめる |
 | `rexel unpack <project.rxcp> -o <dir>` | .rxcp を展開する |
-| `rexel validate <project>` | スキーマとパス解決ルールを検査する |
+| `rexel validate <project>` | スキーマ・ノード定義・リンク・パス解決ルールを検査する |
 | `rexel info <project>` | ノード・アセット・プラグインの一覧を出す |
 | `rexel nodes` | 使えるノードの定義(ポート・パラメータ・型)を出す |
 | `rexel schema` | .rxc の JSON Schema を出す |
@@ -245,15 +246,13 @@ v1 のゴールは「画像を読み込み、ノードで加工し、PNG で書�
 | 合成 | ブレンド(通常 / 乗算 / スクリーン / 加算 / オーバーレイ)、マスク |
 | 値 | 数値、ベクトル、色(パラメータの共有用) |
 
-### 実装済みノードの定義
+### ノード定義の置き場所
 
-ポート名はどれも `image`。
+初期ノードはすべて core に実装済み(25 種)。各ノードのポート・パラメータ・範囲・既定値の正は core のノード定義で、`rexel nodes` で一覧できる。手書きの一覧は持たず、`pnpm skill` が `skills/rexel-composer/references/nodes.md` を生成する。
 
-| type | 入力 | 出力 | パラメータ | 処理 |
-| --- | --- | --- | --- | --- |
-| `core.image` | なし | `image` | `asset`:`assets` の id | アセットの PNG を読み、元のサイズのまま出す |
-| `core.blur` | `image` | `image` | `radius`:0〜256、既定 4 | ガウシアン(σ = radius / 3、カーネル半径は radius の切り上げ)。縦横に分けて畳み込み、端は端の画素を延ばす。透明部分のふちが濁らないよう、計算中だけ premultiplied alpha にする |
-| `core.output` | `image` | `image` | なし | 入力をそのまま出す。CLI の render の既定の対象 |
+- 画像のポート名は `image`。合成系は `base` と `layer`、マスクは `mask` のように役割で名付ける。値ノード(数値・ベクトル・色)の出力は `value`
+- 数値・整数・色・ベクトルのパラメータは、パラメータ名をポート名にしてリンクで受けられる。リンク中のパラメータは `params` の値を無視する
+- `core.blur` はガウシアン(σ = radius / 3、カーネル半径は radius の切り上げ)。縦横に分けて畳み込み、端は端の画素を延ばす。透明部分のふちが濁らないよう、計算中だけ premultiplied alpha にする
 
 ### PNG の読込
 
@@ -264,16 +263,30 @@ v1 のゴールは「画像を読み込み、ノードで加工し、PNG で書�
 
 アニメーションとタイムライン、3D、パーティクル、本家 .pxc のインポート、共有サービス、共同編集。
 
-## 実装の現状(2026-11-18)
+## 実装の現状(2026-11-19)
 
-上の仕様のうち、まだ作っていないもの。作る時が来たら足し、ここから消す。
+仕様はすべて実装済み。残っているのは、ユーザーのアカウントが要る公開作業だけ。
 
-- パッケージは `@rexel/core` と `rexel-composer`(CLI)だけ。viewmodel・ui・host-web・host-vscode はまだない
-- CLI のコマンドは `render` だけ
-- `ProjectFileSystem` は読むだけ。書く・列挙は、pack と保存を作るときに足す
-- `PluginSandbox`、プラグインローダ、`--allow-plugins` はまだない。`plugin.*` のノードは未知の型としてエラーになる
-- 初期ノードのうち実装済みは `core.image`、`core.blur`、`core.output` だけ
-- Agent Skill、`rexel nodes`、`rexel schema` はまだない
+- npm への `rexel-composer` と `@rexel/plugin-api` の公開
+- VS Code Marketplace と Open VSX への公開(`pnpm --filter rexel-composer-vscode package` で .vsix は作れる)
+
+### Web 版の細則
+
+- 開くとき、フォルダに .rxc / .rxcp が複数あれば選ばせる
+- Chrome / Edge ではフォルダを `showDirectoryPicker` で開き、Ctrl+S でそのフォルダへ上書きする。「Save to Folder」で別のフォルダへ保存できる
+- 上書き先のないブラウザでの保存は .rxc のダウンロード。追加したアセットがまだどこにも書かれていなければ、失わないよう .rxcp をダウンロードする
+- 追加したアセットは `assets/` に置き、保存するまでメモリに持つ
+- 未保存の変更があるときは、別のプロジェクトを開く前とページを閉じる前に確認する
+- ビルドした index.html に CSP を入れる(`connect-src 'self' data:`、`script-src 'self' blob:`)。プラグインのワーカーは CSP に加えて `fetch`・`WebSocket`・`importScripts` などを読込前に潰す
+- 同梱サンプルは `examples/` をビルド時に取り込み、最初の画面から開ける
+
+### VSCode 版の細則
+
+- webview は `retainContextWhenHidden` で保つ。ワーカーは blob の inline ワーカー(CSP は `worker-src blob:`)
+- プラグイン入りのプロジェクトは、開くときにモーダルで実行してよいか確認し、文書ごとに覚える
+- アセットを追加すると、.rxc のフォルダの外のファイルは `assets/` にコピーする。.rxcp ではアーカイブの中に入れ、保存時に詰め直す
+- Undo / Redo の単位は viewmodel の履歴と同じ(同じ操作の連続はまとめる)。VSCode からの Undo は webview の履歴を 1 つ戻す
+- コマンドパレットには `RexelComposer: New Project` と、Undo / Redo 以外の編集コマンドを登録する
 
 ## コーディング規約・UI原則
 
@@ -287,6 +300,8 @@ v1 のゴールは「画像を読み込み、ノードで加工し、PNG で書�
 - Lint と整形は ESLint + Prettier。`no-magic-numbers` と `no-warning-comments` 系のルールで上の規約を強制する
   - コメントは、eslint.config.js に直接書いたローカルルール `rexel/no-comments` ですべて禁止する。`noInlineConfig` で、ファイル内からルールを無効にすることも禁じる
   - マジックナンバーで許すのは -1、0、1、2 だけ(`2σ²` や「半分」のような式の中の定数のため)。enum の値と既定値は対象外
+  - インターフェースのメソッドはプロパティの形で書く(`method-signature-style`)。React の props を分割代入しても `this` を失わないため
+  - `!`(非 null 表明)は許す。`noUncheckedIndexedAccess` の下で、画素ループの型付き配列の添字に毎回分岐を書かないため
   - Prettier は `docs/` と `CLAUDE.md` を整形しない(人が書いた文書の表を崩さないため)
 
 ## UI
@@ -312,11 +327,23 @@ VSCode 版では VSCode が webview に注入する値をそのまま使うの�
 | `--vscode-widget-border` | #313131 | #E5E5E5 | ノードの枠 |
 | `--vscode-panel-border` | #2B2B2B | #E5E5E5 | 領域の区切り線 |
 | `--vscode-errorForeground` | #F85149 | #F85149 | エラー |
+| `--vscode-button-secondaryBackground` | #313131 | #E5E5E5 | 副ボタン |
+| `--vscode-button-secondaryForeground` | #CCCCCC | #3B3B3B | 副ボタンの文字 |
+| `--vscode-button-secondaryHoverBackground` | #3C3C3C | #CCCCCC | 副ボタンの hover |
+| `--vscode-button-foreground` | #FFFFFF | #FFFFFF | 主ボタンの文字 |
+| `--vscode-input-foreground` | #CCCCCC | #3B3B3B | 入力欄の文字 |
+| `--vscode-list-hoverBackground` | #2A2D2E | #F2F2F2 | 一覧の hover |
+| `--vscode-list-activeSelectionBackground` | #04395E | #E8E8E8 | コマンドパレットの選択行 |
+| `--vscode-list-activeSelectionForeground` | #FFFFFF | #000000 | 選択行の文字 |
+| `--vscode-toolbar-hoverBackground` | #5A5D5E50 | #B8B8B850 | アイコンボタンの hover |
+| `--vscode-titleBar-activeBackground` | #181818 | #F8F8F8 | Web 版のツールバー |
 
 - `--vscode-descriptionForeground`(説明用の薄い文字色)は使わない。セカンダリテキストを使わないため
 - Tailwind の色は `@theme` でこの表のトークンにだけつなぎ、Tailwind 標準のパレットは使わない
 - Web 版の値は `@layer` の低い層に置き、VSCode が注入する値が必ず勝つようにする
 - ハイコントラストテーマでは `--vscode-contrastBorder` で枠を出す
+- ノードキャンバスの点の格子は `--vscode-foreground` を `color-mix` で薄めて描く。ズームに合わせて間隔を倍々にし、画面上で 12px より細かくしない
+- 画面幅が 48rem 未満では、ノード一覧を隠し(追加はコマンドパレットから)、エディタ・プレビュー・インスペクタを縦に積む
 
 ### レイアウトと部品(VSCode UX ガイドラインから必要な分だけ)
 

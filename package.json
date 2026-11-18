@@ -8,12 +8,13 @@
     "node": ">=22.13.0"
   },
   "scripts": {
-    "build": "pnpm --filter rexel-composer build",
+    "build": "pnpm --filter rexel-composer --filter @rexel/host-web --filter rexel-composer-vscode build",
     "typecheck": "pnpm -r typecheck",
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
     "rexel": "node packages/cli/dist/main.js",
-    "render:examples": "node scripts/render-examples.js"
+    "render:examples": "node scripts/render-examples.js",
+    "skill": "pnpm build && node scripts/generate-skill.js"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

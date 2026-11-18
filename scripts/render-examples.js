@@ -17,7 +17,7 @@ const failures = projects.filter((project) => {
   const output = join(OUTPUT, `${basename(project, PROJECT_EXTENSION)}.png`);
   const { status } = spawnSync(
     process.execPath,
-    [CLI, "render", project, "-o", output, "--force"],
+    [CLI, "render", project, "-o", output, "--force", "--allow-plugins"],
     {
       stdio: "inherit",
     },

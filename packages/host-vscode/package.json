@@ -1,0 +1,123 @@
+{
+  "name": "rexel-composer-vscode",
+  "displayName": "RexelComposer",
+  "description": "Edit RexelComposer node-based pixel art projects (.rxc, .rxcp) inside VS Code",
+  "version": "0.1.0",
+  "publisher": "kaim-ru",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "icon": "dist/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Kaim-Ru/Rexel-Composer"
+  },
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Visualization",
+    "Other"
+  ],
+  "main": "./dist/extension.cjs",
+  "activationEvents": [],
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "rexelComposer.projectEditor",
+        "displayName": "RexelComposer",
+        "selector": [
+          {
+            "filenamePattern": "*.rxc"
+          },
+          {
+            "filenamePattern": "*.rxcp"
+          }
+        ],
+        "priority": "default"
+      }
+    ],
+    "commands": [
+      {
+        "command": "rexel.newProject",
+        "title": "New Project",
+        "category": "RexelComposer"
+      },
+      {
+        "command": "rexel.deleteSelection",
+        "title": "Delete Selected Nodes",
+        "category": "RexelComposer",
+        "enablement": "activeCustomEditorId == rexelComposer.projectEditor"
+      },
+      {
+        "command": "rexel.selectAll",
+        "title": "Select All Nodes",
+        "category": "RexelComposer",
+        "enablement": "activeCustomEditorId == rexelComposer.projectEditor"
+      },
+      {
+        "command": "rexel.copy",
+        "title": "Copy Selected Nodes",
+        "category": "RexelComposer",
+        "enablement": "activeCustomEditorId == rexelComposer.projectEditor"
+      },
+      {
+        "command": "rexel.cut",
+        "title": "Cut Selected Nodes",
+        "category": "RexelComposer",
+        "enablement": "activeCustomEditorId == rexelComposer.projectEditor"
+      },
+      {
+        "command": "rexel.paste",
+        "title": "Paste Nodes",
+        "category": "RexelComposer",
+        "enablement": "activeCustomEditorId == rexelComposer.projectEditor"
+      },
+      {
+        "command": "rexel.duplicate",
+        "title": "Duplicate Selected Nodes",
+        "category": "RexelComposer",
+        "enablement": "activeCustomEditorId == rexelComposer.projectEditor"
+      },
+      {
+        "command": "rexel.frameAll",
+        "title": "Zoom to Fit",
+        "category": "RexelComposer",
+        "enablement": "activeCustomEditorId == rexelComposer.projectEditor"
+      },
+      {
+        "command": "rexel.zoomIn",
+        "title": "Zoom In",
+        "category": "RexelComposer",
+        "enablement": "activeCustomEditorId == rexelComposer.projectEditor"
+      },
+      {
+        "command": "rexel.zoomOut",
+        "title": "Zoom Out",
+        "category": "RexelComposer",
+        "enablement": "activeCustomEditorId == rexelComposer.projectEditor"
+      }
+    ]
+  },
+  "scripts": {
+    "build": "vite build --configLoader runner --config vite.webview.config.ts && vite build --configLoader runner --config vite.extension.config.ts",
+    "package": "pnpm build && vsce package --no-dependencies --out dist/rexel-composer.vsix",
+    "typecheck": "tsc -p ."
+  },
+  "devDependencies": {
+    "@rexel/core": "workspace:*",
+    "@rexel/ui": "workspace:*",
+    "@rexel/viewmodel": "workspace:*",
+    "@tailwindcss/vite": "^4.3.5",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/vscode": "~1.95.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "@vscode/vsce": "^4.1.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "tailwindcss": "^4.3.5",
+    "vite": "^8.3.8"
+  }
+}

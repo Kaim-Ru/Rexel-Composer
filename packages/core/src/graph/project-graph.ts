@@ -1,8 +1,9 @@
-import type { z } from "zod";
+import type { PortType } from "@rexel/plugin-api";
 import { RexelError } from "../errors.ts";
-import type { Project } from "../project/schema.ts";
+import type { Project, ProjectNode } from "../project/schema.ts";
 import type { NodeDefinition } from "./node-definition.ts";
 import type { NodeRegistry } from "./node-registry.ts";
+import { linkTypeOf, paramIssueError } from "./params.ts";
 
 export interface PortReference {
   readonly node: string;
@@ -11,9 +12,11 @@ export interface PortReference {
 
 export interface GraphNode {
   readonly id: string;
+  readonly source: ProjectNode;
   readonly definition: NodeDefinition;
-  readonly params: unknown;
+  readonly params: Readonly<Record<string, unknown>>;
   readonly inputLinks: ReadonlyMap<string, PortReference>;
+  readonly paramLinks: ReadonlyMap<string, PortReference>;
 }
 
 enum VisitState {
@@ -21,67 +24,109 @@ enum VisitState {
   Done,
 }
 
-function paramError(issues: readonly z.core.$ZodIssue[], node: string): RexelError {
-  const [issue] = issues;
-  if (issue === undefined) return new RexelError({ node, reason: "Invalid parameters" });
-  const [param] = issue.code === "unrecognized_keys" ? issue.keys : issue.path.map(String);
-  return new RexelError({
-    node,
-    reason: param === undefined ? issue.message : `Parameter "${param}": ${issue.message}`,
-    ...(param === undefined ? {} : { param }),
-  });
+export function targetPortType(definition: NodeDefinition, port: string): PortType | undefined {
+  const input = definition.inputs[port];
+  if (input !== undefined) return input;
+  const param = definition.params[port];
+  return param === undefined ? undefined : linkTypeOf(param);
+}
+
+function assertAssets(
+  project: Project,
+  node: ProjectNode,
+  definition: NodeDefinition,
+  params: Record<string, unknown>,
+) {
+  for (const [name, spec] of Object.entries(definition.params)) {
+    if (spec.kind !== "asset") continue;
+    const id = params[name];
+    if (id === "" && spec.optional === true) continue;
+    const asset = project.assets.find((candidate) => candidate.id === id);
+    if (asset === undefined) {
+      throw new RexelError({
+        node: node.id,
+        param: name,
+        reason: `Parameter "${name}": asset "${String(id)}" is not listed in the project's assets`,
+      });
+    }
+    if (asset.kind !== spec.assetKind) {
+      throw new RexelError({
+        node: node.id,
+        param: name,
+        reason: `Parameter "${name}": asset "${asset.id}" is a ${asset.kind}, but a ${spec.assetKind} is needed`,
+      });
+    }
+  }
 }
 
 export class ProjectGraph {
-  private constructor(private readonly nodes: ReadonlyMap<string, GraphNode>) {}
+  private constructor(
+    readonly project: Project,
+    private readonly nodes: ReadonlyMap<string, GraphNode>,
+  ) {}
 
   static build(project: Project, registry: NodeRegistry): ProjectGraph {
-    const links = new Map<string, Map<string, PortReference>>();
     const definitions = new Map<string, NodeDefinition>();
     for (const node of project.nodes) {
       if (definitions.has(node.id)) {
         throw new RexelError({ node: node.id, reason: `Node id "${node.id}" is used twice` });
       }
       definitions.set(node.id, registry.require(node.type, node.id));
-      links.set(node.id, new Map());
+    }
+    const inputLinks = new Map<string, Map<string, PortReference>>();
+    const paramLinks = new Map<string, Map<string, PortReference>>();
+    for (const node of project.nodes) {
+      inputLinks.set(node.id, new Map());
+      paramLinks.set(node.id, new Map());
     }
     for (const { from, to } of project.links) {
       const source = definitions.get(from.node);
       const target = definitions.get(to.node);
-      const inputs = links.get(to.node);
       if (source === undefined) {
         throw new RexelError({ reason: `Link starts at unknown node "${from.node}"` });
       }
-      if (target === undefined || inputs === undefined) {
+      if (target === undefined) {
         throw new RexelError({ reason: `Link ends at unknown node "${to.node}"` });
       }
-      if (!source.outputs.includes(from.port)) {
+      const sourceType = source.outputs[from.port];
+      if (sourceType === undefined) {
         throw new RexelError({ node: from.node, reason: `Node has no output port "${from.port}"` });
       }
-      if (!target.inputs.includes(to.port)) {
-        throw new RexelError({ node: to.node, reason: `Node has no input port "${to.port}"` });
-      }
-      if (inputs.has(to.port)) {
+      const targetType = targetPortType(target, to.port);
+      if (targetType === undefined) {
         throw new RexelError({
           node: to.node,
-          reason: `Input "${to.port}" has more than one link`,
+          reason: `Node has no input port or linkable parameter "${to.port}"`,
         });
       }
-      inputs.set(to.port, from);
+      if (targetType !== sourceType) {
+        throw new RexelError({
+          node: to.node,
+          reason: `Cannot link a ${sourceType} output to the ${targetType} port "${to.port}"`,
+        });
+      }
+      const links = (to.port in target.inputs ? inputLinks : paramLinks).get(to.node);
+      if (links?.has(to.port) === true) {
+        throw new RexelError({ node: to.node, reason: `Port "${to.port}" has more than one link` });
+      }
+      links?.set(to.port, from);
     }
     const nodes = new Map<string, GraphNode>();
     for (const node of project.nodes) {
       const definition = registry.require(node.type, node.id);
-      const params = definition.params.safeParse(node.params);
-      if (!params.success) throw paramError(params.error.issues, node.id);
+      const parsed = definition.paramsSchema.safeParse(node.params);
+      if (!parsed.success) throw paramIssueError(parsed.error.issues, node.id);
+      assertAssets(project, node, definition, parsed.data);
       nodes.set(node.id, {
         id: node.id,
+        source: node,
         definition,
-        params: params.data,
-        inputLinks: links.get(node.id) ?? new Map(),
+        params: parsed.data,
+        inputLinks: inputLinks.get(node.id) ?? new Map(),
+        paramLinks: paramLinks.get(node.id) ?? new Map(),
       });
     }
-    const graph = new ProjectGraph(nodes);
+    const graph = new ProjectGraph(project, nodes);
     graph.assertAcyclic();
     return graph;
   }
@@ -105,7 +150,9 @@ export class ProjectGraph {
     for (let current = pending.pop(); current !== undefined; current = pending.pop()) {
       if (found.has(current)) continue;
       found.add(current);
-      for (const link of this.get(current).inputLinks.values()) pending.push(link.node);
+      const node = this.get(current);
+      for (const link of [...node.inputLinks.values(), ...node.paramLinks.values()])
+        pending.push(link.node);
     }
     return found;
   }
@@ -119,9 +166,26 @@ export class ProjectGraph {
         throw new RexelError({ node: id, reason: "Node is part of a cycle" });
       }
       states.set(id, VisitState.Visiting);
-      for (const link of this.get(id).inputLinks.values()) visit(link.node);
+      const node = this.get(id);
+      for (const link of [...node.inputLinks.values(), ...node.paramLinks.values()])
+        visit(link.node);
       states.set(id, VisitState.Done);
     };
     for (const id of this.nodes.keys()) visit(id);
   }
+}
+
+export function extractUpstream(project: Project, id: string): Project {
+  const keep = new Set<string>();
+  const pending = [id];
+  for (let current = pending.pop(); current !== undefined; current = pending.pop()) {
+    if (keep.has(current)) continue;
+    keep.add(current);
+    for (const link of project.links) if (link.to.node === current) pending.push(link.from.node);
+  }
+  return {
+    ...project,
+    nodes: project.nodes.filter((node) => keep.has(node.id)),
+    links: project.links.filter((link) => keep.has(link.to.node) && keep.has(link.from.node)),
+  };
 }

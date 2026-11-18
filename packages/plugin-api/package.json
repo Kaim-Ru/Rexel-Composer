@@ -1,0 +1,17 @@
+{
+  "name": "@rexel/plugin-api",
+  "version": "1.0.0",
+  "description": "Type definitions for RexelComposer plugins",
+  "type": "module",
+  "license": "MIT",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "typecheck": "tsc -p ."
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2023", "DOM", "DOM.Iterable", "DOM.AsyncIterable"],
+    "jsx": "react-jsx",
+    "types": ["vite/client", "vite-plugin-pwa/client"],
+    "resolveJsonModule": true
+  },
+  "include": ["src", "vite.config.ts", "icon.ts", "../ui/src/worker-modules.d.ts"]
+}

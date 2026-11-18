@@ -3,7 +3,7 @@ import { MAX_IMAGE_SIDE } from "../image/raster.ts";
 
 export const CURRENT_FORMAT_VERSION = 1;
 
-const identifierSchema = z
+export const identifierSchema = z
   .string()
   .regex(/^[A-Za-z0-9_-]+$/, "must contain only letters, digits, '_' and '-'");
 
@@ -25,9 +25,10 @@ export const projectSchema = z.strictObject({
   ),
   links: z.array(z.strictObject({ from: portReference, to: portReference })),
   assets: z.array(
-    z.strictObject({ id: identifierSchema, path: z.string(), kind: z.enum(["image"]) }),
+    z.strictObject({ id: identifierSchema, path: z.string(), kind: z.enum(["image", "palette"]) }),
   ),
   plugins: z.array(z.strictObject({ id: identifierSchema, version: z.string(), path: z.string() })),
 });
 
 export type Project = z.output<typeof projectSchema>;
+export type ProjectNode = Project["nodes"][number];

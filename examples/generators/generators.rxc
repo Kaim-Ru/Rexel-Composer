@@ -1,0 +1,35 @@
+{
+  "formatVersion": 1,
+  "meta": { "name": "Generators", "appVersion": "0.1.0" },
+  "canvas": { "width": 128, "height": 128 },
+  "nodes": [
+    { "id": "sky", "type": "core.gradient", "position": { "x": 0, "y": 0 }, "params": { "from": "#1d2b53ff", "to": "#ff77a8ff", "angle": 90 } },
+    { "id": "clouds", "type": "core.noise", "position": { "x": 0, "y": 200 }, "params": { "pattern": "perlin", "scale": 4, "octaves": 4, "seed": 7 } },
+    { "id": "cloud-blend", "type": "core.blend", "position": { "x": 280, "y": 80 }, "params": { "mode": "screen", "opacity": 0.35 } },
+    { "id": "sun-color", "type": "core.color", "position": { "x": 280, "y": 280 }, "params": { "value": "#ffec27ff" } },
+    { "id": "sun", "type": "core.shape", "position": { "x": 520, "y": 280 }, "params": { "shape": "circle", "center": [92, 40], "size": [36, 36] } },
+    { "id": "with-sun", "type": "core.blend", "position": { "x": 760, "y": 120 }, "params": { "mode": "normal" } },
+    { "id": "cells", "type": "core.noise", "position": { "x": 520, "y": 480 }, "params": { "pattern": "cell", "scale": 10, "seed": 3 } },
+    { "id": "ground", "type": "core.shape", "position": { "x": 760, "y": 480 }, "params": { "shape": "rectangle", "center": [64, 112], "size": [128, 32], "color": "#008751ff", "antialias": false } },
+    { "id": "ground-texture", "type": "core.mask", "position": { "x": 1000, "y": 440 }, "params": { "channel": "alpha" } },
+    { "id": "textured", "type": "core.blend", "position": { "x": 1240, "y": 440 }, "params": { "mode": "multiply" } },
+    { "id": "scene", "type": "core.blend", "position": { "x": 1480, "y": 200 }, "params": { "mode": "normal" } },
+    { "id": "out", "type": "core.output", "position": { "x": 1720, "y": 200 } }
+  ],
+  "links": [
+    { "from": { "node": "sky", "port": "image" }, "to": { "node": "cloud-blend", "port": "base" } },
+    { "from": { "node": "clouds", "port": "image" }, "to": { "node": "cloud-blend", "port": "layer" } },
+    { "from": { "node": "sun-color", "port": "value" }, "to": { "node": "sun", "port": "color" } },
+    { "from": { "node": "cloud-blend", "port": "image" }, "to": { "node": "with-sun", "port": "base" } },
+    { "from": { "node": "sun", "port": "image" }, "to": { "node": "with-sun", "port": "layer" } },
+    { "from": { "node": "cells", "port": "image" }, "to": { "node": "ground-texture", "port": "image" } },
+    { "from": { "node": "ground", "port": "image" }, "to": { "node": "ground-texture", "port": "mask" } },
+    { "from": { "node": "ground", "port": "image" }, "to": { "node": "textured", "port": "base" } },
+    { "from": { "node": "ground-texture", "port": "image" }, "to": { "node": "textured", "port": "layer" } },
+    { "from": { "node": "with-sun", "port": "image" }, "to": { "node": "scene", "port": "base" } },
+    { "from": { "node": "textured", "port": "image" }, "to": { "node": "scene", "port": "layer" } },
+    { "from": { "node": "scene", "port": "image" }, "to": { "node": "out", "port": "image" } }
+  ],
+  "assets": [],
+  "plugins": []
+}

@@ -1,0 +1,7 @@
+**
+!dist/extension.cjs
+!dist/icon.png
+!dist/webview/**
+!package.json
+!README.md
+!LICENSE

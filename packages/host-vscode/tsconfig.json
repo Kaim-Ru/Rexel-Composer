@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "types": ["node", "vscode", "vite/client"],
+    "resolveJsonModule": true
+  },
+  "include": [
+    "src",
+    "vite.webview.config.ts",
+    "vite.extension.config.ts",
+    "../ui/src/worker-modules.d.ts"
+  ]
+}

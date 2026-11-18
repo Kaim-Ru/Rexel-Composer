@@ -1,0 +1,227 @@
+@layer vscode-defaults, theme, base, components, utilities;
+
+@import "tailwindcss";
+@import "@vscode/codicons/dist/codicon.css";
+
+@layer vscode-defaults {
+  :root {
+    color-scheme: light dark;
+    --vscode-font-family: system-ui, -apple-system, "Segoe UI", "Ubuntu", "Droid Sans", sans-serif;
+    --vscode-font-size: 13px;
+    --vscode-editor-font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+    --vscode-editor-background: light-dark(#ffffff, #1f1f1f);
+    --vscode-sideBar-background: light-dark(#f8f8f8, #181818);
+    --vscode-panel-background: light-dark(#f8f8f8, #181818);
+    --vscode-editorWidget-background: light-dark(#f8f8f8, #202020);
+    --vscode-foreground: light-dark(#3b3b3b, #cccccc);
+    --vscode-focusBorder: light-dark(#005fb8, #0078d4);
+    --vscode-button-background: light-dark(#005fb8, #0078d4);
+    --vscode-button-foreground: #ffffff;
+    --vscode-button-hoverBackground: light-dark(#0258a8, #026ec1);
+    --vscode-button-secondaryBackground: light-dark(#e5e5e5, #313131);
+    --vscode-button-secondaryForeground: light-dark(#3b3b3b, #cccccc);
+    --vscode-button-secondaryHoverBackground: light-dark(#cccccc, #3c3c3c);
+    --vscode-input-background: light-dark(#ffffff, #313131);
+    --vscode-input-foreground: light-dark(#3b3b3b, #cccccc);
+    --vscode-input-border: light-dark(#cecece, #3c3c3c);
+    --vscode-widget-border: light-dark(#e5e5e5, #313131);
+    --vscode-panel-border: light-dark(#e5e5e5, #2b2b2b);
+    --vscode-errorForeground: #f85149;
+    --vscode-list-hoverBackground: light-dark(#f2f2f2, #2a2d2e);
+    --vscode-list-activeSelectionBackground: light-dark(#e8e8e8, #04395e);
+    --vscode-list-activeSelectionForeground: light-dark(#000000, #ffffff);
+    --vscode-toolbar-hoverBackground: light-dark(#b8b8b850, #5a5d5e50);
+    --vscode-titleBar-activeBackground: light-dark(#f8f8f8, #181818);
+  }
+}
+
+body.vscode-light {
+  color-scheme: light;
+}
+
+body.vscode-dark,
+body.vscode-high-contrast {
+  color-scheme: dark;
+}
+
+body.vscode-high-contrast-light {
+  color-scheme: light;
+}
+
+@theme {
+  --color-*: initial;
+  --color-editor: var(--vscode-editor-background);
+  --color-sidebar: var(--vscode-sideBar-background);
+  --color-panel: var(--vscode-panel-background);
+  --color-widget: var(--vscode-editorWidget-background);
+  --color-titlebar: var(--vscode-titleBar-activeBackground, var(--vscode-sideBar-background));
+  --color-fg: var(--vscode-foreground);
+  --color-focus: var(--vscode-focusBorder);
+  --color-button: var(--vscode-button-background);
+  --color-button-fg: var(--vscode-button-foreground);
+  --color-button-hover: var(--vscode-button-hoverBackground);
+  --color-secondary: var(--vscode-button-secondaryBackground);
+  --color-secondary-fg: var(--vscode-button-secondaryForeground);
+  --color-secondary-hover: var(--vscode-button-secondaryHoverBackground);
+  --color-input: var(--vscode-input-background);
+  --color-input-fg: var(--vscode-input-foreground);
+  --color-input-border: var(--vscode-input-border);
+  --color-widget-border: var(--vscode-widget-border);
+  --color-panel-border: var(--vscode-panel-border);
+  --color-error: var(--vscode-errorForeground);
+  --color-hover: var(--vscode-list-hoverBackground);
+  --color-selection: var(--vscode-list-activeSelectionBackground);
+  --color-selection-fg: var(--vscode-list-activeSelectionForeground);
+  --color-toolbar-hover: var(--vscode-toolbar-hoverBackground);
+  --color-contrast: var(--vscode-contrastBorder, transparent);
+  --font-sans: var(--vscode-font-family);
+  --font-mono: var(--vscode-editor-font-family);
+}
+
+@layer base {
+  html {
+    font-size: var(--vscode-font-size);
+    line-height: 1.4;
+  }
+
+  html,
+  body,
+  #root {
+    block-size: 100%;
+    margin: 0;
+  }
+
+  body {
+    background: var(--vscode-editor-background);
+    color: var(--vscode-foreground);
+    font-family: var(--vscode-font-family);
+    overflow: hidden;
+  }
+
+  :where(:focus-visible) {
+    outline: 1px solid var(--vscode-focusBorder);
+    outline-offset: -1px;
+  }
+
+  :where(input, select, textarea) {
+    background: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+    border: 1px solid var(--vscode-input-border, transparent);
+    border-radius: 2px;
+    font: inherit;
+    padding-block: 0.15em;
+    padding-inline: 0.4em;
+    min-inline-size: 0;
+  }
+
+  :where(input:focus, select:focus, textarea:focus) {
+    outline: 1px solid var(--vscode-focusBorder);
+    outline-offset: -1px;
+  }
+
+  :where(input[type="number"]) {
+    font-family: var(--vscode-editor-font-family);
+  }
+
+  :where(input[type="checkbox"]) {
+    accent-color: var(--vscode-focusBorder);
+  }
+
+  :where(input[type="range"]) {
+    accent-color: var(--vscode-button-background);
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+
+  :where(button) {
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  dialog {
+    color: var(--vscode-foreground);
+    background: var(--vscode-editorWidget-background);
+    border: 1px solid var(--vscode-widget-border);
+    padding: 0;
+  }
+
+  dialog::backdrop {
+    background: color-mix(in oklab, var(--vscode-editor-background) 30%, transparent);
+  }
+}
+
+@layer components {
+  .editor-shell {
+    display: grid;
+    block-size: 100%;
+    grid-template-columns: minmax(10rem, 14rem) minmax(0, 1fr) minmax(14rem, 20rem);
+    grid-template-rows: minmax(0, 1fr) minmax(8rem, 38%);
+    grid-template-areas:
+      "sidebar editor inspector"
+      "sidebar panel inspector";
+  }
+
+  .editor-shell:has(> [data-area="toolbar"]) {
+    grid-template-rows: auto minmax(0, 1fr) minmax(8rem, 38%);
+    grid-template-areas:
+      "toolbar toolbar toolbar"
+      "sidebar editor inspector"
+      "sidebar panel inspector";
+  }
+
+  @media (width < 48rem) {
+    .editor-shell {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1fr) minmax(8rem, 30%) minmax(8rem, 30%);
+      grid-template-areas: "editor" "panel" "inspector";
+    }
+
+    .editor-shell:has(> [data-area="toolbar"]) {
+      grid-template-rows: auto minmax(0, 1fr) minmax(8rem, 30%) minmax(8rem, 30%);
+      grid-template-areas: "toolbar" "editor" "panel" "inspector";
+    }
+
+    .editor-shell > [data-area="sidebar"] {
+      display: none;
+    }
+
+    .editor-shell > [data-area="inspector"] {
+      border-inline-start: 0;
+      border-block-start: 1px solid var(--vscode-panel-border);
+    }
+  }
+}
+
+@utility canvas-grid {
+  background-color: var(--vscode-editor-background);
+  background-image: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--vscode-foreground) 22%, transparent) 1px,
+    transparent 1.5px
+  );
+  background-size: var(--grid-step) var(--grid-step);
+  background-position: var(--grid-x) var(--grid-y);
+}
+
+@utility scroll-area {
+  overflow: auto;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+}
+
+@utility checkerboard {
+  background-color: var(--vscode-editor-background);
+  background-image: conic-gradient(
+    color-mix(in oklab, var(--vscode-foreground) 12%, transparent) 25%,
+    transparent 0 50%,
+    color-mix(in oklab, var(--vscode-foreground) 12%, transparent) 0 75%,
+    transparent 0
+  );
+  background-size: 1rem 1rem;
+}
+
+@utility pixelated {
+  image-rendering: pixelated;
+}

@@ -52,6 +52,8 @@ export default tseslint.config(
         },
       ],
       "@typescript-eslint/restrict-template-expressions": ["error", { allowNumber: true }],
+      "@typescript-eslint/method-signature-style": ["error", "property"],
+      "@typescript-eslint/no-non-null-assertion": "off",
     },
   },
   { files: ["**/*.js"], ...tseslint.configs.disableTypeChecked },

@@ -1,0 +1,36 @@
+{
+  "formatVersion": 1,
+  "meta": { "name": "Transform", "appVersion": "0.1.0" },
+  "canvas": { "width": 128, "height": 128 },
+  "nodes": [
+    { "id": "photo", "type": "core.image", "position": { "x": 0, "y": 0 }, "params": { "asset": "input" } },
+    { "id": "crop", "type": "core.crop", "position": { "x": 240, "y": 0 }, "params": { "x": 16, "y": 16, "width": 64, "height": 64 } },
+    { "id": "angle", "type": "core.number", "position": { "x": 240, "y": 220 }, "params": { "value": 30 } },
+    { "id": "zoom", "type": "core.vector", "position": { "x": 240, "y": 360 }, "params": { "value": [0.8, 0.8] } },
+    { "id": "spin", "type": "core.transform", "position": { "x": 480, "y": 0 }, "params": { "interpolation": "bilinear" } },
+    { "id": "mirror", "type": "core.flip", "position": { "x": 720, "y": 0 }, "params": { "horizontal": true, "vertical": false } },
+    { "id": "tile", "type": "core.tile", "position": { "x": 960, "y": 0 }, "params": { "columns": 2, "rows": 2 } },
+    { "id": "sharpen", "type": "core.sharpen", "position": { "x": 1200, "y": 0 }, "params": { "amount": 1.5, "radius": 1 } },
+    { "id": "pixelate", "type": "core.pixelate", "position": { "x": 1440, "y": 0 }, "params": { "size": 4 } },
+    { "id": "edges", "type": "core.edge", "position": { "x": 1440, "y": 220 }, "params": { "strength": 2 } },
+    { "id": "outline", "type": "core.blend", "position": { "x": 1680, "y": 80 }, "params": { "mode": "add", "opacity": 0.6 } },
+    { "id": "solid", "type": "core.solid", "position": { "x": 1680, "y": 300 }, "params": { "color": "#00000000" } },
+    { "id": "out", "type": "core.output", "position": { "x": 1920, "y": 80 } }
+  ],
+  "links": [
+    { "from": { "node": "photo", "port": "image" }, "to": { "node": "crop", "port": "image" } },
+    { "from": { "node": "crop", "port": "image" }, "to": { "node": "spin", "port": "image" } },
+    { "from": { "node": "angle", "port": "value" }, "to": { "node": "spin", "port": "rotation" } },
+    { "from": { "node": "zoom", "port": "value" }, "to": { "node": "spin", "port": "scale" } },
+    { "from": { "node": "spin", "port": "image" }, "to": { "node": "mirror", "port": "image" } },
+    { "from": { "node": "mirror", "port": "image" }, "to": { "node": "tile", "port": "image" } },
+    { "from": { "node": "tile", "port": "image" }, "to": { "node": "sharpen", "port": "image" } },
+    { "from": { "node": "sharpen", "port": "image" }, "to": { "node": "pixelate", "port": "image" } },
+    { "from": { "node": "pixelate", "port": "image" }, "to": { "node": "edges", "port": "image" } },
+    { "from": { "node": "pixelate", "port": "image" }, "to": { "node": "outline", "port": "base" } },
+    { "from": { "node": "edges", "port": "image" }, "to": { "node": "outline", "port": "layer" } },
+    { "from": { "node": "outline", "port": "image" }, "to": { "node": "out", "port": "image" } }
+  ],
+  "assets": [{ "id": "input", "path": "input.png", "kind": "image" }],
+  "plugins": []
+}

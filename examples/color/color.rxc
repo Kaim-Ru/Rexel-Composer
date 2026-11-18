@@ -1,0 +1,32 @@
+{
+  "formatVersion": 1,
+  "meta": { "name": "Color", "appVersion": "0.1.0" },
+  "canvas": { "width": 128, "height": 128 },
+  "nodes": [
+    { "id": "photo", "type": "core.image", "position": { "x": 0, "y": 0 }, "params": { "asset": "input" } },
+    { "id": "shift", "type": "core.hsv", "position": { "x": 240, "y": 0 }, "params": { "hue": 40, "saturation": 1.2, "value": 1 } },
+    { "id": "levels", "type": "core.levels", "position": { "x": 480, "y": 0 }, "params": { "inputBlack": 0.1, "inputWhite": 0.9, "gamma": 1.2 } },
+    { "id": "gray", "type": "core.grayscale", "position": { "x": 480, "y": 200 } },
+    { "id": "negative", "type": "core.invert", "position": { "x": 720, "y": 200 } },
+    { "id": "mix", "type": "core.blend", "position": { "x": 960, "y": 80 }, "params": { "mode": "overlay", "opacity": 0.5 } },
+    { "id": "reduce", "type": "core.palette", "position": { "x": 1200, "y": 80 }, "params": { "file": "pico8" } },
+    { "id": "dither", "type": "core.dither", "position": { "x": 1440, "y": 80 }, "params": { "levels": 4, "matrix": "4x4" } },
+    { "id": "out", "type": "core.output", "position": { "x": 1680, "y": 80 } }
+  ],
+  "links": [
+    { "from": { "node": "photo", "port": "image" }, "to": { "node": "shift", "port": "image" } },
+    { "from": { "node": "shift", "port": "image" }, "to": { "node": "levels", "port": "image" } },
+    { "from": { "node": "photo", "port": "image" }, "to": { "node": "gray", "port": "image" } },
+    { "from": { "node": "gray", "port": "image" }, "to": { "node": "negative", "port": "image" } },
+    { "from": { "node": "levels", "port": "image" }, "to": { "node": "mix", "port": "base" } },
+    { "from": { "node": "negative", "port": "image" }, "to": { "node": "mix", "port": "layer" } },
+    { "from": { "node": "mix", "port": "image" }, "to": { "node": "dither", "port": "image" } },
+    { "from": { "node": "dither", "port": "image" }, "to": { "node": "reduce", "port": "image" } },
+    { "from": { "node": "reduce", "port": "image" }, "to": { "node": "out", "port": "image" } }
+  ],
+  "assets": [
+    { "id": "input", "path": "input.png", "kind": "image" },
+    { "id": "pico8", "path": "palettes/pico-8.hex", "kind": "palette" }
+  ],
+  "plugins": []
+}

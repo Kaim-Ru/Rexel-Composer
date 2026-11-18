@@ -1,14 +1,12 @@
+import type { RasterData } from "@rexel/plugin-api";
 import { RexelError } from "../errors.ts";
 
+export type { RasterData };
+
 export const CHANNELS = 4;
+export const ALPHA = 3;
 export const MAX_IMAGE_SIDE = 16384;
 export const MAX_IMAGE_PIXELS = 67_108_864;
-
-export interface RasterData {
-  readonly width: number;
-  readonly height: number;
-  readonly data: Float32Array<ArrayBuffer>;
-}
 
 export function assertImageSize(width: number, height: number) {
   const valid =
@@ -46,5 +44,29 @@ export class Raster implements RasterData {
 
   static from(source: RasterData): Raster {
     return source instanceof Raster ? source : new Raster(source.width, source.height, source.data);
+  }
+
+  get byteLength(): number {
+    return this.data.byteLength;
+  }
+
+  index(x: number, y: number): number {
+    return (y * this.width + x) * CHANNELS;
+  }
+
+  clone(): Raster {
+    return new Raster(this.width, this.height, this.data.slice());
+  }
+
+  map(transform: (pixel: Float32Array, target: Float32Array) => void): Raster {
+    const result = new Raster(this.width, this.height);
+    const pixel = new Float32Array(CHANNELS);
+    const target = new Float32Array(CHANNELS);
+    for (let offset = 0; offset < this.data.length; offset += CHANNELS) {
+      pixel.set(this.data.subarray(offset, offset + CHANNELS));
+      transform(pixel, target);
+      result.data.set(target, offset);
+    }
+    return result;
   }
 }

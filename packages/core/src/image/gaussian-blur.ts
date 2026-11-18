@@ -1,7 +1,7 @@
+import { premultiply, unpremultiplyInPlace } from "./alpha.ts";
 import { CHANNELS, Raster } from "./raster.ts";
 
 const SIGMAS_PER_RADIUS = 3;
-const ALPHA = 3;
 
 enum Axis {
   Horizontal,
@@ -17,29 +17,6 @@ function gaussianKernel(radius: number): Float32Array {
   });
   const total = weights.reduce((sum, weight) => sum + weight, 0);
   return weights.map((weight) => weight / total);
-}
-
-function premultiply(source: Raster): Raster {
-  const result = new Raster(source.width, source.height, source.data.slice());
-  const { data } = result;
-  for (let pixel = 0; pixel < data.length; pixel += CHANNELS) {
-    const alpha = data[pixel + ALPHA] ?? 0;
-    for (let channel = 0; channel < ALPHA; channel++) {
-      data[pixel + channel] = (data[pixel + channel] ?? 0) * alpha;
-    }
-  }
-  return result;
-}
-
-function unpremultiply(source: Raster): Raster {
-  const { data } = source;
-  for (let pixel = 0; pixel < data.length; pixel += CHANNELS) {
-    const alpha = data[pixel + ALPHA] ?? 0;
-    for (let channel = 0; channel < ALPHA; channel++) {
-      data[pixel + channel] = alpha > 0 ? (data[pixel + channel] ?? 0) / alpha : 0;
-    }
-  }
-  return source;
 }
 
 function convolve(source: Raster, kernel: Float32Array, axis: Axis): Raster {
@@ -73,5 +50,5 @@ export function gaussianBlur(source: Raster, radius: number): Raster {
   if (radius === 0) return source;
   const kernel = gaussianKernel(radius);
   const horizontal = convolve(premultiply(source), kernel, Axis.Horizontal);
-  return unpremultiply(convolve(horizontal, kernel, Axis.Vertical));
+  return unpremultiplyInPlace(convolve(horizontal, kernel, Axis.Vertical));
 }
