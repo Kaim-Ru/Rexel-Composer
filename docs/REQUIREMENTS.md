@@ -267,6 +267,8 @@ v1 のゴールは「画像を読み込み、ノードで加工し、PNG で書�
 
 仕様はすべて実装済み。残っているのは、ユーザーのアカウントが要る公開作業だけ。
 
+`v*` のタグを push すると、GitHub Actions が検査とビルドをして、GitHub Release に `rexel-composer.vsix`・CLI の tarball・`@rexel/plugin-api` の tarball を載せる。npm と Marketplace に出るまでは、ここから入れる。
+
 - npm への `rexel-composer` と `@rexel/plugin-api` の公開
 - VS Code Marketplace と Open VSX への公開(`pnpm --filter rexel-composer-vscode package` で .vsix は作れる)
 

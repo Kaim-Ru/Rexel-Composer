@@ -20,5 +20,6 @@ Run **RexelComposer: New Project** from the Command Palette to create an empty `
 The `rexel-composer` npm package provides the `rexel` CLI, which renders the same projects to PNG:
 
 ```sh
-npx rexel-composer render project.rxc -o out.png
+npm install -g https://github.com/Kaim-Ru/Rexel-Composer/releases/download/v0.1.0/rexel-composer-0.1.0.tgz
+rexel render project.rxc -o out.png
 ```
