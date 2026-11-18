@@ -26,7 +26,9 @@ RexelComposer は、ノードベースの画像処理ツール [Pixel Composer](
 | 色の扱い | 計算は sRGB のまま、内部は Float32 RGBA、書き出しは 8bit PNG |
 | 画像の読込 | PNG のみ。ブラウザのデコーダに任せず core でデコードし、全ホストで同じ画素にする。インターレース PNG は非対応 |
 | Web・VSCode の UI | React + Tailwind CSS + TypeScript。色は VSCode のテーマトークンに合わせる |
-| CLI | TypeScript(Node.js) |
+| CLI | TypeScript(Node.js 22.13 以上) |
+| .rxc とパラメータの検証 | zod v4。型・検証・JSON Schema(`rexel schema`)を一つの定義から出す |
+| TypeScript の版 | 6.0 系に固定。typescript-eslint 8 系が 6.1 未満までしか対応していないため。対応したら上げる |
 | プラグイン | TypeScript / JavaScript |
 | AI 対応 | Agent Skill をリポジトリに同梱 |
 | v1 スコープ | 静止画のノード処理 |
@@ -71,7 +73,18 @@ Web と VSCode は UI ごと共有し、CLI は UI を飛ばして Model を直�
 - `TaskRunner`:重いノード処理を Web Worker / worker_threads に投げる
 - `PluginSandbox`:プラグインのコードを隔離して実行する
 
-リポジトリは pnpm workspaces のモノレポ、ビルドは Vite。TypeScript は strict。
+core の tsconfig は `types: []` で、DOM も Node の型も読まない。触ればコンパイルエラーになる。
+
+ノードの処理は2種類に分ける。
+
+| 種類 | 動く場所 | 例 |
+| --- | --- | --- |
+| pure | `TaskRunner` 経由でワーカー。入力の画像とパラメータだけを受け、画像を返す純粋関数 | `core.blur` |
+| inline | 評価エンジンと同じスレッド。`ProjectFileSystem` などのホスト資源を使う、または処理がごく軽い | `core.image`、`core.output` |
+
+評価エンジンは対象ノードから上流へたどり、ノードごとに結果をメモ化する。独立した枝は並行して評価する。
+
+リポジトリは pnpm workspaces のモノレポ、ビルドは Vite。TypeScript は strict。ワークスペースのルートの package.json は `rexel-composer-workspace`(非公開)。
 
 ## プロジェクトファイル仕様
 
@@ -89,10 +102,20 @@ Web と VSCode は UI ごと共有し、CLI は UI を飛ばして Model を直�
 | `assets` | array | id、相対パス、種類(画像・パレットなど) |
 | `plugins` | array | id、版、相対パス |
 
+### .rxc の細則
+
+- 現在の `formatVersion` は 1。今より新しい版は「rexel を更新して」という理由つきで拒否する。マイグレーションの仕組みは版 2 を作るときに足す
+- どのオブジェクトも、定義にないキーがあればエラーにする(綴り間違いを黙って無視しない)
+- `meta` は `name` と `appVersion`、ノードの位置は `position: { x, y }`
+- ノードの `params` は省略でき、省略時は `{}`。各パラメータの既定値はノード定義が持つ
+- ノード・アセット・プラグインの id と、リンクのポート名に使えるのは英数字と `_` `-` だけ
+- `assets` の種類は今は `image` だけ。パレットは、パレット減色ノードを作るときに足す
+- `canvas` は 1 辺 16384 px 以下。扱う画像はすべて 1 辺 16384 px 以下、かつ合計 67,108,864 px 以下(Float32 RGBA で 1 GB)
+
 ### パス解決ルール
 
 1. パスは .rxc からの相対パスだけ。区切りは OS に関係なく `/` で保存する
-2. 絶対パス、`..` を含むパス、ドライブ文字、URL スキームは読込時に拒否する
+2. 絶対パス、`..` を含むパス、ドライブ文字、URL スキームは読込時に拒否する。`\` 区切り、NUL 文字、空のセグメント(`a//b`)も拒否する。`./` は取り除いてから判定する
 3. シンボリックリンクは、解決後の実体が同じ階層以下にあるときだけ許す(CLI・VSCode)
 4. このルールは core の1カ所で判定し、全ホストが通る
 
@@ -139,7 +162,25 @@ CLI は Node.js(LTS)上の TypeScript で書き、npm で `rexel-composer` と�
 - 全コマンド共通で `-h / --help`、`--version`、`--json`、`-q / --quiet`、`-v / --verbose`
 - `NO_COLOR` を尊重し、TTY でないときは色と進捗表示を止める
 - ファイル名の代わりに `-` で stdin / stdout を扱える
-- 既存ファイルの上書きは `--force` があるときだけ
+- 既存ファイルの上書きは `--force` があるときだけ。`--force` なしで既存ファイルを指したら実行エラー(1)
+- `--version` だけで、短い形(`-V`)は付けない。`-v` は `--verbose` に使う
+- `-q` と `-v` は同時に指定できない(使い方の誤り)
+- 引数なしで `rexel` を叩いたらヘルプを出して 2 で終わる。使い方の誤りでは、エラーの後に `--help` の案内を出す
+- `-v` はノードごとの処理時間を stderr に出す。進捗は TTY のときだけ、1 行を書き換えて出す
+
+### `--json` の出力
+
+- stdout には JSON を 1 つだけ出す。成功時は `{"ok": true, ...}`(render なら `output`、`node`、`width`、`height`)
+- 失敗時は `{"ok": false, "error": {"reason", "node"?, "param"?, "usage"}}`。`usage` が true なら使い方の誤り(終了コード 2)
+- `--json` のときは、ヘルプや使い方の案内を stderr にも出さない
+
+### render の細則
+
+- `--node` を省いたときは `core.output` ノードを対象にする。1 つもない、または 2 つ以上あるときは使い方の誤り(2)にして、`--node` を促す
+- `--set` の値は JSON として読み、読めなければ文字列として扱う。型と範囲はノード定義で検査する。存在しないノードを指したら実行エラー
+- `-` で stdin から .rxc を読むときは、アセットの相対パスをカレントディレクトリから解決する
+- `-o -` で PNG を stdout に出す。stdout が TTY なら拒否する。`--json` との併用は使い方の誤り
+- 書き出す PNG は 8bit RGBA。行ごとのフィルタは 5 種から自動で選ぶ
 
 ### ライブラリ
 
@@ -148,6 +189,7 @@ CLI は Node.js(LTS)上の TypeScript で書き、npm で `rexel-composer` と�
 | 引数解析 | commander + @commander-js/extra-typings(型付き) |
 | 色付き出力 | Node 組み込みの `util.styleText` |
 | zip・PNG | core と共通(fflate、core の PNG デコーダ・エンコーダ) |
+| ビルド | Vite の SSR ビルド。core と依存ライブラリをすべて dist に同梱するので、配布パッケージは実行時の依存を持たない |
 
 ### コマンド
 
@@ -203,20 +245,49 @@ v1 のゴールは「画像を読み込み、ノードで加工し、PNG で書�
 | 合成 | ブレンド(通常 / 乗算 / スクリーン / 加算 / オーバーレイ)、マスク |
 | 値 | 数値、ベクトル、色(パラメータの共有用) |
 
+### 実装済みノードの定義
+
+ポート名はどれも `image`。
+
+| type | 入力 | 出力 | パラメータ | 処理 |
+| --- | --- | --- | --- | --- |
+| `core.image` | なし | `image` | `asset`:`assets` の id | アセットの PNG を読み、元のサイズのまま出す |
+| `core.blur` | `image` | `image` | `radius`:0〜256、既定 4 | ガウシアン(σ = radius / 3、カーネル半径は radius の切り上げ)。縦横に分けて畳み込み、端は端の画素を延ばす。透明部分のふちが濁らないよう、計算中だけ premultiplied alpha にする |
+| `core.output` | `image` | `image` | なし | 入力をそのまま出す。CLI の render の既定の対象 |
+
+### PNG の読込
+
+- 色の種類はすべて(グレー、RGB、パレット、グレー+α、RGBA)、ビット深度は 1〜16 bit、`tRNS` の透過に対応する
+- チャンクの CRC を検査する。`gAMA` や `iCCP` などの補助チャンクは読まない(計算は sRGB のまま)
+
 ### v1 に入れないもの
 
 アニメーションとタイムライン、3D、パーティクル、本家 .pxc のインポート、共有サービス、共同編集。
+
+## 実装の現状(2026-11-18)
+
+上の仕様のうち、まだ作っていないもの。作る時が来たら足し、ここから消す。
+
+- パッケージは `@rexel/core` と `rexel-composer`(CLI)だけ。viewmodel・ui・host-web・host-vscode はまだない
+- CLI のコマンドは `render` だけ
+- `ProjectFileSystem` は読むだけ。書く・列挙は、pack と保存を作るときに足す
+- `PluginSandbox`、プラグインローダ、`--allow-plugins` はまだない。`plugin.*` のノードは未知の型としてエラーになる
+- 初期ノードのうち実装済みは `core.image`、`core.blur`、`core.output` だけ
+- Agent Skill、`rexel nodes`、`rexel schema` はまだない
 
 ## コーディング規約・UI原則
 
 コードは名前と構造だけで意図を伝え、ルールは可能な限り Lint で機械的に強制する。
 
 - 「あとで使うかも」で層・抽象・拡張ポイントを足さない。今の要件に要るものだけ作る
-- テストコードは書かない。代わりに `examples/` にサンプル .rxc を置き、`rexel render` で一括レンダして目で確かめられる状態を保つ
+- テストコードは書かない。代わりに `examples/` にサンプル .rxc を置き、`rexel render` で一括レンダして目で確かめられる状態を保つ。一括レンダは `pnpm render:examples` で、結果は `examples/out/`(git の対象外)に出る
 - コメントは書かない
 - 責務ごとにクラスを分ける
 - マジックナンバーは意味のある名前の定数にする(例 `DEFAULT_CANVAS_WIDTH`)
 - Lint と整形は ESLint + Prettier。`no-magic-numbers` と `no-warning-comments` 系のルールで上の規約を強制する
+  - コメントは、eslint.config.js に直接書いたローカルルール `rexel/no-comments` ですべて禁止する。`noInlineConfig` で、ファイル内からルールを無効にすることも禁じる
+  - マジックナンバーで許すのは -1、0、1、2 だけ(`2σ²` や「半分」のような式の中の定数のため)。enum の値と既定値は対象外
+  - Prettier は `docs/` と `CLAUDE.md` を整形しない(人が書いた文書の表を崩さないため)
 
 ## UI
 
