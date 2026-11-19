@@ -1,4 +1,9 @@
-import { ARCHIVE_EXTENSION, packProject, PROJECT_EXTENSION, RexelError } from "@rexel/core";
+import {
+  ARCHIVE_EXTENSION,
+  packProject,
+  PROJECT_EXTENSION,
+  RexelError,
+} from "@rexel-composer/core";
 import {
   App,
   Icon,
@@ -8,7 +13,7 @@ import {
   type EditorSession,
   type HostAction,
   type UiHost,
-} from "@rexel/ui";
+} from "@rexel-composer/ui";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { download, filesByRelativePath, pickFiles, readDrop } from "./browser-io.ts";
 import { EXAMPLES } from "./examples.ts";

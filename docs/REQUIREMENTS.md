@@ -44,27 +44,27 @@ RexelComposer は、ノードベースの画像処理ツール [Pixel Composer](
 ロジックは `core` にだけ置き、3つの窓(ホスト)は「ファイルをどう読むか・重い処理をどこで回すか・画面をどう出すか」の差分だけを実装する。core は DOM も Node API も触らず、必要なものはインターフェースとしてホストから注入する(依存性逆転)。
 
 ```
-@rexel/host-web      @rexel/host-vscode    rexel-composer
+@rexel-composer/host-web      @rexel-composer/host-vscode    rexel-composer
         \                  /                      |
          \                /                       |
-          @rexel/ui (View)                        |  UIを通らず直接
+          @rexel-composer/ui (View)                        |  UIを通らず直接
                 |                                 |
-       @rexel/viewmodel (ViewModel)               |
+       @rexel-composer/viewmodel (ViewModel)               |
                 |                                 |
                 +---------------+-----------------+
                                 |
-                     @rexel/core (Model)
+                     @rexel-composer/core (Model)
 ```
 
 Web と VSCode は UI ごと共有し、CLI は UI を飛ばして Model を直接使う。
 
 | パッケージ | 層 | 責務 |
 | --- | --- | --- |
-| `@rexel/core` | Model | ノードグラフ、評価エンジン、組み込みノード定義、Float32 RGBA の画像処理、.rxc の読み書きとマイグレーション、パス解決、.rxcp の zip 処理、PNG のデコードとエンコード、プラグインローダ |
-| `@rexel/viewmodel` | ViewModel | エディタ状態(選択・パン・ズーム)、コマンドと Undo / Redo、購読可能な状態 |
-| `@rexel/ui` | View | React コンポーネント(ノードエディタ、プレビュー、インスペクタ) |
-| `@rexel/host-web` | Host | ブラウザのファイルアクセス、Web Worker、PWA、GitHub Pages 向けビルド |
-| `@rexel/host-vscode` | Host | CustomEditorProvider、webview と拡張本体のメッセージ橋 |
+| `@rexel-composer/core` | Model | ノードグラフ、評価エンジン、組み込みノード定義、Float32 RGBA の画像処理、.rxc の読み書きとマイグレーション、パス解決、.rxcp の zip 処理、PNG のデコードとエンコード、プラグインローダ |
+| `@rexel-composer/viewmodel` | ViewModel | エディタ状態(選択・パン・ズーム)、コマンドと Undo / Redo、購読可能な状態 |
+| `@rexel-composer/ui` | View | React コンポーネント(ノードエディタ、プレビュー、インスペクタ) |
+| `@rexel-composer/host-web` | Host | ブラウザのファイルアクセス、Web Worker、PWA、GitHub Pages 向けビルド |
+| `@rexel-composer/host-vscode` | Host | CustomEditorProvider、webview と拡張本体のメッセージ橋 |
 | `rexel-composer` | Host | CLI。コマンド定義、Node の fs、worker_threads |
 
 ホストが実装するインターフェースは3つだけ。
@@ -142,13 +142,13 @@ Vite で静的ビルドし、GitHub Actions 経由で GitHub Pages にデプロ�
 
 ## VSCode拡張版
 
-.rxc と .rxcp を VSCode で開くと、そのタブの中で Web 版と同じ `@rexel/ui` が起動する(Snowstorm の体験)。
+.rxc と .rxcp を VSCode で開くと、そのタブの中で Web 版と同じ `@rexel-composer/ui` が起動する(Snowstorm の体験)。
 
 - `CustomEditorProvider` で `*.rxc` と `*.rxcp` に紐づける
 - webview と拡張本体は postMessage の RPC でつなぐ
 - 拡張本体が `vscode.workspace.fs` で `ProjectFileSystem` を実装する。パス解決ルールは core 側で判定する
 - 編集は VSCode の未保存マーク・Ctrl+S・Undo / Redo と連動させる(`onDidChangeCustomDocument`)
-- Undo 履歴の本体は `@rexel/viewmodel` が持つ
+- Undo 履歴の本体は `@rexel-composer/viewmodel` が持つ
 - 公開先は VS Code Marketplace と Open VSX
 
 ## CLI版
@@ -208,7 +208,7 @@ CLI は Node.js(LTS)上の TypeScript で書き、npm で `rexel-composer` と�
 
 プラグインは ESM の JavaScript(TypeScript で書いてビルド)で、プロジェクトフォルダ内に置く。だから .rxcp に同梱され、共有はファイル添付だけで完結する。
 
-- 型定義パッケージ `@rexel/plugin-api` を npm に公開する。プラグインは `apiVersion` を宣言する
+- 型定義パッケージ `@rexel-composer/plugin-api` を npm に公開する。プラグインは `apiVersion` を宣言する
 - 提供できるのはノード定義:入出力ポート、パラメータ、処理関数(Float32 RGBA を受けて返す純粋関数)
 - Web・VSCode では処理関数を Web Worker 内で動かし、DOM とネットワークに触れさせない
 - Node には強いサンドボックスがないので、CLI では `--allow-plugins` を付けたときだけプラグインを読む
@@ -267,9 +267,9 @@ v1 のゴールは「画像を読み込み、ノードで加工し、PNG で書�
 
 仕様はすべて実装済み。残っているのは、ユーザーのアカウントが要る公開作業だけ。
 
-`v*` のタグを push すると、GitHub Actions が検査とビルドをして、GitHub Release に `rexel-composer.vsix`・CLI の tarball・`@rexel/plugin-api` の tarball を載せる。npm と Marketplace に出るまでは、ここから入れる。
+`v*` のタグを push すると、GitHub Actions が検査とビルドをして、GitHub Release に `rexel-composer.vsix`・CLI の tarball・`@rexel-composer/plugin-api` の tarball を載せる。npm と Marketplace に出るまでは、ここから入れる。
 
-- npm への `rexel-composer` と `@rexel/plugin-api` の公開
+- npm への `rexel-composer` と `@rexel-composer/plugin-api` の公開
 - VS Code Marketplace と Open VSX への公開(`pnpm --filter rexel-composer-vscode package` で .vsix は作れる)
 
 ### Web 版の細則

@@ -5,7 +5,7 @@ import {
   PROJECT_EXTENSION,
   unpackProject,
   type Project,
-} from "@rexel/core";
+} from "@rexel-composer/core";
 import packageJson from "../package.json" with { type: "json" };
 import { WebFileSystem } from "./web-file-system.ts";
 

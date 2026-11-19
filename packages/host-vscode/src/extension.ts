@@ -1,5 +1,5 @@
-import { createEmptyProject, PROJECT_EXTENSION, serializeProject } from "@rexel/core";
-import { EDITOR_COMMANDS } from "@rexel/viewmodel";
+import { createEmptyProject, PROJECT_EXTENSION, serializeProject } from "@rexel-composer/core";
+import { EDITOR_COMMANDS } from "@rexel-composer/viewmodel";
 import * as vscode from "vscode";
 import packageJson from "../package.json" with { type: "json" };
 import { ProjectEditorProvider } from "./project-editor.ts";

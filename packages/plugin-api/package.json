@@ -1,5 +1,5 @@
 {
-  "name": "@rexel/plugin-api",
+  "name": "@rexel-composer/plugin-api",
   "version": "1.0.0",
   "description": "Type definitions for RexelComposer plugins",
   "type": "module",

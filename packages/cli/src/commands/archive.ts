@@ -7,7 +7,7 @@ import {
   parseProject,
   RexelError,
   unpackProject,
-} from "@rexel/core";
+} from "@rexel-composer/core";
 import { reporterFor, type GlobalOptions, type RootCommand } from "../cli-context.ts";
 import { NodeProjectFileSystem } from "../node-project-file-system.ts";
 import { assertWritable, exists, writeOutput } from "../output-file.ts";

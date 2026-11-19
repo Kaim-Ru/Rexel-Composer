@@ -1,4 +1,9 @@
-import { targetPortType, type NodeRegistry, type PortType, type Project } from "@rexel/core";
+import {
+  targetPortType,
+  type NodeRegistry,
+  type PortType,
+  type Project,
+} from "@rexel-composer/core";
 
 export interface PortAddress {
   readonly node: string;

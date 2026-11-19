@@ -4,7 +4,7 @@ import {
   type NodeRegistry,
   type Project,
   type ProjectNode,
-} from "@rexel/core";
+} from "@rexel-composer/core";
 import { parseClipboard, serializeClipboard } from "./clipboard.ts";
 import { canConnect, type PortAddress } from "./graph-rules.ts";
 import { History } from "./history.ts";

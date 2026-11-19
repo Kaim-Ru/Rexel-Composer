@@ -29,6 +29,6 @@ jobs:
         working-directory: packages/plugin-api
       - run: >
           gh release create "$GITHUB_REF_NAME" --title "RexelComposer $GITHUB_REF_NAME" --generate-notes
-          rexel-composer.vsix rexel-composer-*.tgz rexel-plugin-api-*.tgz
+          rexel-composer.vsix rexel-composer-*.tgz
         env:
           GH_TOKEN: ${{ github.token }}

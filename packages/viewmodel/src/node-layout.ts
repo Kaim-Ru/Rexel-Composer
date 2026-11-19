@@ -1,4 +1,9 @@
-import { linkTypeOf, type NodeDefinition, type PortType, type ProjectNode } from "@rexel/core";
+import {
+  linkTypeOf,
+  type NodeDefinition,
+  type PortType,
+  type ProjectNode,
+} from "@rexel-composer/core";
 import type { Viewport } from "./editor-store.ts";
 
 export const NODE_WIDTH = 176;

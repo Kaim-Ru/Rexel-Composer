@@ -1,5 +1,5 @@
 import { access, writeFile } from "node:fs/promises";
-import { RexelError } from "@rexel/core";
+import { RexelError } from "@rexel-composer/core";
 import { STDIO } from "./project-input.ts";
 import { UsageError } from "./usage-error.ts";
 

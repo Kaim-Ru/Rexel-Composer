@@ -1,4 +1,4 @@
-import type { ParamSpec, PortType } from "@rexel/plugin-api";
+import type { ParamSpec, PortType } from "@rexel-composer/plugin-api";
 import { z } from "zod";
 import { RexelError } from "../errors.ts";
 import { isHexColor, parseHexColor } from "./values.ts";

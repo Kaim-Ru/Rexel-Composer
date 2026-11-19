@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@commander-js/extra-typings": "^15.1.0",
-    "@rexel/core": "workspace:*",
+    "@rexel-composer/core": "workspace:*",
     "commander": "^15.1.0",
     "@types/node": "^24.19.2",
     "vite": "^8.3.8"

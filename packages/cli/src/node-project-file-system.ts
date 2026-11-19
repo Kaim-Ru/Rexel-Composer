@@ -5,7 +5,7 @@ import {
   normalizeProjectPath,
   RexelError,
   type ProjectFileSystem,
-} from "@rexel/core";
+} from "@rexel-composer/core";
 
 const PROJECT_SEPARATOR = "/";
 const MAX_LISTED_FILES = 10_000;

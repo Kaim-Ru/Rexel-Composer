@@ -1,5 +1,16 @@
-import { parseProject, RexelError, type Project, type ProjectFileSystem } from "@rexel/core";
-import { App, openEditorSession, type AppApi, type EditorSession, type UiHost } from "@rexel/ui";
+import {
+  parseProject,
+  RexelError,
+  type Project,
+  type ProjectFileSystem,
+} from "@rexel-composer/core";
+import {
+  App,
+  openEditorSession,
+  type AppApi,
+  type EditorSession,
+  type UiHost,
+} from "@rexel-composer/ui";
 import { createRoot } from "react-dom/client";
 import "./webview.css";
 import type { HostRequest, HostToWebview, WebviewToHost } from "../protocol.ts";

@@ -1,5 +1,5 @@
-import { NODE_CATEGORIES, type NodeCategory, type NodeDefinition } from "@rexel/core";
-import type { NodeRegistry } from "@rexel/core";
+import { NODE_CATEGORIES, type NodeCategory, type NodeDefinition } from "@rexel-composer/core";
+import type { NodeRegistry } from "@rexel-composer/core";
 import { useState } from "react";
 import { NODE_DRAG_TYPE } from "./NodeCanvas.tsx";
 

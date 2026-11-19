@@ -7,7 +7,7 @@ import {
   RexelError,
   unpackProject,
   type Project,
-} from "@rexel/core";
+} from "@rexel-composer/core";
 import * as vscode from "vscode";
 import { ArchiveProjectFiles, FolderProjectFiles, type ProjectFiles } from "./project-files.ts";
 import {

@@ -1,5 +1,5 @@
 import { Command, CommanderError, Option } from "@commander-js/extra-typings";
-import { RexelError } from "@rexel/core";
+import { RexelError } from "@rexel-composer/core";
 import packageJson from "../package.json" with { type: "json" };
 import { registerArchiveCommands } from "./commands/archive.ts";
 import { registerInspectCommands, ValidationFailed } from "./commands/inspect.ts";

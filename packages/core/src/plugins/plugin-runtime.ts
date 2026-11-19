@@ -1,4 +1,4 @@
-import { PLUGIN_API_VERSION, type PluginNode } from "@rexel/plugin-api";
+import { PLUGIN_API_VERSION, type PluginNode } from "@rexel-composer/plugin-api";
 import { RexelError } from "../errors.ts";
 import type { NodeTask } from "../host.ts";
 import type { Values } from "../graph/values.ts";

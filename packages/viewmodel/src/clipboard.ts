@@ -1,4 +1,4 @@
-import type { Project, ProjectNode } from "@rexel/core";
+import type { Project, ProjectNode } from "@rexel-composer/core";
 
 const CLIPBOARD_MARKER = "rexel-composer/nodes";
 const CLIPBOARD_VERSION = 1;

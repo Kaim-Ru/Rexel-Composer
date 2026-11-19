@@ -3,7 +3,7 @@ import {
   type CommandContext,
   type EditorStore,
   type PreviewController,
-} from "@rexel/viewmodel";
+} from "@rexel-composer/viewmodel";
 import { useEffect, useImperativeHandle, useMemo, useRef, useState, type Ref } from "react";
 import { CommandPalette, type PaletteItem } from "./components/CommandPalette.tsx";
 import { IconButton } from "./components/Icon.tsx";

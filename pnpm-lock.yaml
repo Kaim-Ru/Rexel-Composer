@@ -35,7 +35,7 @@ importers:
       '@commander-js/extra-typings':
         specifier: ^15.1.0
         version: 15.1.0(commander@15.1.0)
-      '@rexel/core':
+      '@rexel-composer/core':
         specifier: workspace:*
         version: link:../core
       '@types/node':
@@ -50,7 +50,7 @@ importers:
 
   packages/core:
     dependencies:
-      '@rexel/plugin-api':
+      '@rexel-composer/plugin-api':
         specifier: workspace:*
         version: link:../plugin-api
       fflate:
@@ -62,13 +62,13 @@ importers:
 
   packages/host-vscode:
     devDependencies:
-      '@rexel/core':
+      '@rexel-composer/core':
         specifier: workspace:*
         version: link:../core
-      '@rexel/ui':
+      '@rexel-composer/ui':
         specifier: workspace:*
         version: link:../ui
-      '@rexel/viewmodel':
+      '@rexel-composer/viewmodel':
         specifier: workspace:*
         version: link:../viewmodel
       '@tailwindcss/vite':
@@ -107,13 +107,13 @@ importers:
 
   packages/host-web:
     dependencies:
-      '@rexel/core':
+      '@rexel-composer/core':
         specifier: workspace:*
         version: link:../core
-      '@rexel/ui':
+      '@rexel-composer/ui':
         specifier: workspace:*
         version: link:../ui
-      '@rexel/viewmodel':
+      '@rexel-composer/viewmodel':
         specifier: workspace:*
         version: link:../viewmodel
       react:
@@ -152,10 +152,10 @@ importers:
 
   packages/ui:
     dependencies:
-      '@rexel/core':
+      '@rexel-composer/core':
         specifier: workspace:*
         version: link:../core
-      '@rexel/viewmodel':
+      '@rexel-composer/viewmodel':
         specifier: workspace:*
         version: link:../viewmodel
       '@vscode/codicons':
@@ -177,7 +177,7 @@ importers:
 
   packages/viewmodel:
     dependencies:
-      '@rexel/core':
+      '@rexel-composer/core':
         specifier: workspace:*
         version: link:../core
 

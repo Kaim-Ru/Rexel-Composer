@@ -1,4 +1,4 @@
-import type { PortType } from "@rexel/plugin-api";
+import type { PortType } from "@rexel-composer/plugin-api";
 import { RexelError } from "../errors.ts";
 import type { Project, ProjectNode } from "../project/schema.ts";
 import type { NodeDefinition } from "./node-definition.ts";

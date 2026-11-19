@@ -1,4 +1,4 @@
-import type { NodeDefinition, PortType, ProjectNode } from "@rexel/core";
+import type { NodeDefinition, PortType, ProjectNode } from "@rexel-composer/core";
 import {
   frameViewport,
   MAX_ZOOM,
@@ -15,7 +15,7 @@ import {
   type PortAddress,
   type PortRow,
   type Viewport,
-} from "@rexel/viewmodel";
+} from "@rexel-composer/viewmodel";
 import {
   useCallback,
   useEffect,

@@ -1,4 +1,4 @@
-import type { Color, PortType, PortValue, RasterData, Vector } from "@rexel/plugin-api";
+import type { Color, PortType, PortValue, RasterData, Vector } from "@rexel-composer/plugin-api";
 import { RexelError } from "../errors.ts";
 import { Raster } from "../image/raster.ts";
 

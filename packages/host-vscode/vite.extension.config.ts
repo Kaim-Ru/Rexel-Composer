@@ -1,4 +1,4 @@
-import { renderAppIcon } from "@rexel/ui/app-icon";
+import { renderAppIcon } from "@rexel-composer/ui/app-icon";
 import { defineConfig } from "vite";
 
 const NODE_TARGET = "node20";

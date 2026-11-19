@@ -1,5 +1,5 @@
 {
-  "name": "@rexel/host-web",
+  "name": "@rexel-composer/host-web",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -11,9 +11,9 @@
     "typecheck": "tsc -p ."
   },
   "dependencies": {
-    "@rexel/core": "workspace:*",
-    "@rexel/ui": "workspace:*",
-    "@rexel/viewmodel": "workspace:*",
+    "@rexel-composer/core": "workspace:*",
+    "@rexel-composer/ui": "workspace:*",
+    "@rexel-composer/viewmodel": "workspace:*",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },

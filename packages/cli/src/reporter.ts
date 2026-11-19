@@ -1,5 +1,5 @@
 import { styleText } from "node:util";
-import type { RexelErrorDetail } from "@rexel/core";
+import type { RexelErrorDetail } from "@rexel-composer/core";
 
 export interface ReporterOptions {
   readonly json: boolean;

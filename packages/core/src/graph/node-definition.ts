@@ -1,4 +1,4 @@
-import type { ParamValues, PortType, PortValues, ProcessContext } from "@rexel/plugin-api";
+import type { ParamValues, PortType, PortValues, ProcessContext } from "@rexel-composer/plugin-api";
 import type { z } from "zod";
 import { RexelError } from "../errors.ts";
 import type { Raster } from "../image/raster.ts";

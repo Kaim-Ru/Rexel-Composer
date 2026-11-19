@@ -32,7 +32,7 @@ Commands: `render`, `validate`, `info`, `nodes`, `schema`, `pack`, `unpack`. Run
 
 ## Plugins
 
-A plugin is a self-contained ES module in the project folder whose default export is `{ apiVersion: 1, nodes: [...] }`. Write it in TypeScript with the types and `definePlugin` helper from `@rexel/plugin-api`, then bundle it to one file. See [examples/plugin](examples/plugin). The web app and VS Code ask before running a project's plugins and run them in a worker with no network access. The CLI loads them only with `--allow-plugins`.
+A plugin is a self-contained ES module in the project folder whose default export is `{ apiVersion: 1, nodes: [...] }`. Write it in TypeScript with the types and `definePlugin` helper from `@rexel-composer/plugin-api`, then bundle it to one file. See [examples/plugin](examples/plugin). The web app and VS Code ask before running a project's plugins and run them in a worker with no network access. The CLI loads them only with `--allow-plugins`.
 
 ## Development
 
@@ -44,7 +44,7 @@ pnpm build              # CLI, web app and VS Code extension
 pnpm typecheck
 pnpm lint
 pnpm render:examples    # render every example into examples/out/
-pnpm --filter @rexel/host-web dev
+pnpm --filter @rexel-composer/host-web dev
 pnpm --filter rexel-composer-vscode package   # writes dist/rexel-composer.vsix
 ```
 

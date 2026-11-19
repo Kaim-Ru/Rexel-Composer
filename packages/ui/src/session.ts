@@ -1,5 +1,5 @@
-import { createProjectRegistry, type Project, type ProjectFileSystem } from "@rexel/core";
-import { EditorStore, PreviewController } from "@rexel/viewmodel";
+import { createProjectRegistry, type Project, type ProjectFileSystem } from "@rexel-composer/core";
+import { EditorStore, PreviewController } from "@rexel-composer/viewmodel";
 import { BrowserWorkerPool } from "./browser/worker-pool.ts";
 
 export interface EditorSession {

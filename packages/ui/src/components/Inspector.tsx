@@ -1,5 +1,5 @@
-import { MAX_IMAGE_SIDE } from "@rexel/core";
-import type { EditorState, EditorStore } from "@rexel/viewmodel";
+import { MAX_IMAGE_SIDE } from "@rexel-composer/core";
+import type { EditorState, EditorStore } from "@rexel-composer/viewmodel";
 import type { AssetKind, UiHost } from "../host.ts";
 import { IconButton } from "./Icon.tsx";
 import { ParamControl } from "./ParamControl.tsx";

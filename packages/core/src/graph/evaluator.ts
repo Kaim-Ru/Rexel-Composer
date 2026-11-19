@@ -1,4 +1,4 @@
-import type { PortType } from "@rexel/plugin-api";
+import type { PortType } from "@rexel-composer/plugin-api";
 import { RexelError } from "../errors.ts";
 import type { PluginSandbox, ProjectFileSystem, TaskRunner } from "../host.ts";
 import { AssetLoader } from "./asset-loader.ts";

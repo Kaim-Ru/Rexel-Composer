@@ -1,4 +1,4 @@
-import type { AssetKind } from "@rexel/ui";
+import type { AssetKind } from "@rexel-composer/ui";
 
 export const EDITOR_VIEW_TYPE = "rexelComposer.projectEditor";
 

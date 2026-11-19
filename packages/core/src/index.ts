@@ -1,5 +1,5 @@
-export type * from "@rexel/plugin-api";
-export { PLUGIN_API_VERSION } from "@rexel/plugin-api";
+export type * from "@rexel-composer/plugin-api";
+export { PLUGIN_API_VERSION } from "@rexel-composer/plugin-api";
 export { RexelError, type RexelErrorDetail } from "./errors.ts";
 export type {
   NodeTask,

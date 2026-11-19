@@ -1,4 +1,4 @@
-import type { Project } from "@rexel/core";
+import type { Project } from "@rexel-composer/core";
 
 const MERGE_WINDOW_MS = 800;
 const MAX_HISTORY = 200;

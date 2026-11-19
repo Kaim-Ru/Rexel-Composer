@@ -10,7 +10,7 @@ import {
   type NodeRegistry,
   type Project,
   type ProjectFileSystem,
-} from "@rexel/core";
+} from "@rexel-composer/core";
 import { NodeProjectFileSystem } from "./node-project-file-system.ts";
 import type { WorkerPool } from "./worker-pool.ts";
 

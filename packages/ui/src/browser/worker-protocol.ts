@@ -1,4 +1,9 @@
-import type { NodeTask, PluginManifest, PluginSource, RexelErrorDetail } from "@rexel/core";
+import type {
+  NodeTask,
+  PluginManifest,
+  PluginSource,
+  RexelErrorDetail,
+} from "@rexel-composer/core";
 
 export type WorkerRequest =
   | {

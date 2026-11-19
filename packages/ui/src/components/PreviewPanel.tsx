@@ -5,8 +5,8 @@ import {
   type PrimaryOutput,
   type RasterData,
   type Vector,
-} from "@rexel/core";
-import type { PreviewController, PreviewState } from "@rexel/viewmodel";
+} from "@rexel-composer/core";
+import type { PreviewController, PreviewState } from "@rexel-composer/viewmodel";
 import { useEffect, useRef, useState } from "react";
 import { useObservable } from "../hooks.ts";
 import type { UiHost } from "../host.ts";

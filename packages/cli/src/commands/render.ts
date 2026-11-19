@@ -10,7 +10,7 @@ import {
   Raster,
   RexelError,
   type ParamOverride,
-} from "@rexel/core";
+} from "@rexel-composer/core";
 import { reporterFor, type GlobalOptions, type RootCommand } from "../cli-context.ts";
 import { assertWritable, writeOutput } from "../output-file.ts";
 import { openProject, projectRegistry, STDIO } from "../project-input.ts";

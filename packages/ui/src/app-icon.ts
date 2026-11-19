@@ -1,4 +1,4 @@
-import { encodePng, parseHexColor, Raster } from "@rexel/core";
+import { encodePng, parseHexColor, Raster } from "@rexel-composer/core";
 
 const ICON_ROWS = [
   "................",

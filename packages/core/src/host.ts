@@ -1,4 +1,4 @@
-import type { ProcessContext } from "@rexel/plugin-api";
+import type { ProcessContext } from "@rexel-composer/plugin-api";
 import type { PluginManifest } from "./plugins/plugin-manifest.ts";
 import type { Values } from "./graph/values.ts";
 

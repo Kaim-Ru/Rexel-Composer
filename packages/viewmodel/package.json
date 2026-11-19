@@ -1,5 +1,5 @@
 {
-  "name": "@rexel/viewmodel",
+  "name": "@rexel-composer/viewmodel",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -11,6 +11,6 @@
     "typecheck": "tsc -p ."
   },
   "dependencies": {
-    "@rexel/core": "workspace:*"
+    "@rexel-composer/core": "workspace:*"
   }
 }

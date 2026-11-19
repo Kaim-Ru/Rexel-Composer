@@ -1,4 +1,4 @@
-import { normalizeProjectPath, RexelError, type ProjectFileSystem } from "@rexel/core";
+import { normalizeProjectPath, RexelError, type ProjectFileSystem } from "@rexel-composer/core";
 
 const SEPARATOR = "/";
 

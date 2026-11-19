@@ -1,4 +1,4 @@
-import { renderAppIcon } from "@rexel/ui/app-icon";
+import { renderAppIcon } from "@rexel-composer/ui/app-icon";
 import type { Plugin } from "vite";
 
 const SMALL_ICON_SIZE = 192;

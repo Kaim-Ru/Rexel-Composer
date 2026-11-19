@@ -27,7 +27,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
       - run: pnpm lint
-      - run: pnpm --filter @rexel/host-web build
+      - run: pnpm --filter @rexel-composer/host-web build
       - uses: actions/upload-pages-artifact@v3
         with:
           path: packages/host-web/dist

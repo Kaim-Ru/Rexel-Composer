@@ -11,7 +11,7 @@ import {
   type PluginSource,
   type TaskRunner,
   type Values,
-} from "@rexel/core";
+} from "@rexel-composer/core";
 import type { WorkerRequest, WorkerResponse } from "./worker-protocol.ts";
 
 const WORKER_FILE = "worker.js";

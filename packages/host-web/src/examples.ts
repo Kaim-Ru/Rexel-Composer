@@ -1,4 +1,4 @@
-import { PROJECT_EXTENSION } from "@rexel/core";
+import { PROJECT_EXTENSION } from "@rexel-composer/core";
 
 const EXAMPLES_ROOT = "../../../examples/";
 const SEPARATOR = "/";

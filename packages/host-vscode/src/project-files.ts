@@ -1,5 +1,5 @@
 import { realpath } from "node:fs/promises";
-import { assertInsideRoot, normalizeProjectPath, RexelError } from "@rexel/core";
+import { assertInsideRoot, normalizeProjectPath, RexelError } from "@rexel-composer/core";
 import * as vscode from "vscode";
 
 const SEPARATOR = "/";

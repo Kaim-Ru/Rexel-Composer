@@ -5,7 +5,7 @@ import {
   RexelError,
   validateProject,
   type RexelErrorDetail,
-} from "@rexel/core";
+} from "@rexel-composer/core";
 import { reporterFor, type GlobalOptions, type RootCommand } from "../cli-context.ts";
 import { openProject, projectRegistry } from "../project-input.ts";
 import { WorkerPool } from "../worker-pool.ts";

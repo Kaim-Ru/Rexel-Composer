@@ -11,7 +11,7 @@ import {
   type PrimaryOutput,
   type Project,
   type RexelErrorDetail,
-} from "@rexel/core";
+} from "@rexel-composer/core";
 import type { EditorStore } from "./editor-store.ts";
 import { Observable } from "./observable.ts";
 

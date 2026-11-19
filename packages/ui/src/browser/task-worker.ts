@@ -5,7 +5,7 @@ import {
   runNodeTask,
   transferablesOf,
   type PluginSource,
-} from "@rexel/core";
+} from "@rexel-composer/core";
 import type { WorkerRequest, WorkerResponse } from "./worker-protocol.ts";
 
 const BLOCKED_GLOBALS = [

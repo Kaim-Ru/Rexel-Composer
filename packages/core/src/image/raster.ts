@@ -1,4 +1,4 @@
-import type { RasterData } from "@rexel/plugin-api";
+import type { RasterData } from "@rexel-composer/plugin-api";
 import { RexelError } from "../errors.ts";
 
 export type { RasterData };

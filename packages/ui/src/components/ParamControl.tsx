@@ -1,4 +1,4 @@
-import type { ParamSpec, Project } from "@rexel/core";
+import type { ParamSpec, Project } from "@rexel-composer/core";
 import { useId } from "react";
 import type { AssetKind } from "../host.ts";
 import { IconButton } from "./Icon.tsx";
