@@ -3,7 +3,7 @@
 A node-based compositor for pixel art and small images, rebuilt for the web from the ideas of Pixel Composer. You connect nodes such as noise, blur, palette reduction and blend, see the result live, and export PNG. Every window onto a project uses the same engine and produces the same pixels:
 
 - **Web app**: https://kaim-ru.github.io/Rexel-Composer/ (installable as a PWA and works offline)
-- **VS Code extension**: opens `.rxc` and `.rxcp` files in an editor tab. Download `rexel-composer.vsix` from the [latest release](https://github.com/Kaim-Ru/Rexel-Composer/releases/latest) and run `code --install-extension rexel-composer.vsix`
+- **VS Code extension**: opens `.rxc` and `.rxcp` files in an editor tab. Install [RexelComposer from the Marketplace](https://marketplace.visualstudio.com/items?itemName=kaim-ru.rexel-composer-vscode) or run `code --install-extension kaim-ru.rexel-composer-vscode`
 - **CLI**: `rexel render project.rxc -o out.png`
 
 ## Project files

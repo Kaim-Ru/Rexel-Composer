@@ -265,12 +265,14 @@ v1 のゴールは「画像を読み込み、ノードで加工し、PNG で書�
 
 ## 実装の現状(2026-11-19)
 
-仕様はすべて実装済み。残っているのは、ユーザーのアカウントが要る公開作業だけ。
+仕様はすべて実装済み。VS Code 拡張は Marketplace に `kaim-ru.rexel-composer-vscode` として公開済み。
 
-`v*` のタグを push すると、GitHub Actions が検査とビルドをして、GitHub Release に `rexel-composer.vsix`・CLI の tarball・`@rexel-composer/plugin-api` の tarball を載せる。npm と Marketplace に出るまでは、ここから入れる。
+`v*` のタグを push すると、GitHub Actions が検査とビルドをして、GitHub Release に `rexel-composer.vsix`・CLI の tarball・`@rexel-composer/plugin-api` の tarball を載せる。Marketplace へは、この .vsix を publisher `kaim-ru` の管理画面からアップロードする。
 
-- npm への `rexel-composer` と `@rexel-composer/plugin-api` の公開
-- VS Code Marketplace と Open VSX への公開(`pnpm --filter rexel-composer-vscode package` で .vsix は作れる)
+残っている公開作業:
+
+- npm への `rexel-composer` と `@rexel-composer/plugin-api` の公開(2FA のワンタイムコードが要るので、ユーザーが `npm publish --access public` を実行する)
+- Open VSX への公開
 
 ### Web 版の細則
 
