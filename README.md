@@ -15,10 +15,10 @@ The full format is in [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md), and `rexel s
 
 ## CLI
 
-Install it from the release tarball (Node 22.13 or later):
+Install it from npm (Node 22.13 or later), or run it once with `npx rexel-composer`:
 
 ```sh
-npm install -g https://github.com/Kaim-Ru/Rexel-Composer/releases/download/v0.1.0/rexel-composer-0.1.0.tgz
+npm install -g rexel-composer
 rexel render examples/blur/blur.rxc -o blur.png
 rexel validate project.rxc --json
 rexel nodes
@@ -32,7 +32,7 @@ Commands: `render`, `validate`, `info`, `nodes`, `schema`, `pack`, `unpack`. Run
 
 ## Plugins
 
-A plugin is a self-contained ES module in the project folder whose default export is `{ apiVersion: 1, nodes: [...] }`. Write it in TypeScript with the types and `definePlugin` helper from `@rexel-composer/plugin-api`, then bundle it to one file. See [examples/plugin](examples/plugin). The web app and VS Code ask before running a project's plugins and run them in a worker with no network access. The CLI loads them only with `--allow-plugins`.
+A plugin is a self-contained ES module in the project folder whose default export is `{ apiVersion: 1, nodes: [...] }`. Write it in TypeScript with the types and `definePlugin` helper from [`@rexel-composer/plugin-api`](https://www.npmjs.com/package/@rexel-composer/plugin-api), then bundle it to one file. See [examples/plugin](examples/plugin). The web app and VS Code ask before running a project's plugins and run them in a worker with no network access. The CLI loads them only with `--allow-plugins`.
 
 ## Development
 

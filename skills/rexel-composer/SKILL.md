@@ -9,7 +9,8 @@ A RexelComposer project is a node graph saved as a `.rxc` file (UTF-8 JSON). Nod
 
 ## Running the CLI
 
-- Installed: `npm install -g https://github.com/Kaim-Ru/Rexel-Composer/releases/download/v0.1.0/rexel-composer-0.1.0.tgz`, then `rexel <command>`
+- Installed: `npm install -g rexel-composer`, then `rexel <command>`
+- Without installing: `npx rexel-composer <command>`
 - Inside this repository: `pnpm build` once, then `pnpm rexel <command>`
 
 ## Workflow
